@@ -25,7 +25,7 @@ $ composer update
 	Minhbang\LaravelUser\UserServiceProvider::class,
 ```
 
-* Publish config và database migrations
+* **Publish config và database migrations**
 ```bash
 $ php artisan vendor:publish
 $ php artisan migrate
