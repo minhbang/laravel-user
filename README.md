@@ -4,7 +4,7 @@ Package quản lý User cho Laravel Application
 
 ## Install
 
-* Thêm vào file composer.json của app
+* **Thêm vào file composer.json của app**
 ```json
 	"repositories": [
         {
@@ -20,7 +20,7 @@ Package quản lý User cho Laravel Application
 $ composer update
 ```
 
-* Thêm vào file config/app.php => 'providers'
+* **Thêm vào file config/app.php => 'providers'**
 ```php
 	Minhbang\LaravelUser\UserServiceProvider::class,
 ```
@@ -31,7 +31,15 @@ $ php artisan vendor:publish
 $ php artisan migrate
 ```
 
-* Database Seeder
+* **Sữa file config/auth.php**
+```php
+//Thay
+'model' => App\User::class,
+//Bằng
+'model' => Minhbang\LaravelUser\User::class,
+```
+
+* **Database Seeder**
 ```php
 <?php
 
