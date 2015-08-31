@@ -30,11 +30,11 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        if ($this->auth->guest() || !$this->auth->user()->isAdmin()) {
-            abort(403, trans('app.forbidden'));
+        $user = user();
+        if ($user && $user->isAdmin()) {
+            return $next($request);
+        } else{
+            abort(403, trans('common.forbidden'));
         }
-
-        return $next($request);
     }
-
 }
