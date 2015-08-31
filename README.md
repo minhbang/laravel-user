@@ -39,6 +39,14 @@ $ php artisan migrate
 'model' => Minhbang\LaravelUser\User::class,
 ```
 
+* **Thêm vào file app/Http/Kernel.php => $routeMiddleware** (đứng đầu)
+```php
+protected $routeMiddleware = [
+	'admin' => \Minhbang\LaravelUser\Middleware\Admin::class,
+	//...
+];
+```
+
 * **Database Seeder**
 ```php
 <?php
