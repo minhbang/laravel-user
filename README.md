@@ -22,7 +22,7 @@ $ composer update
 
 * Thêm vào file config/app.php => 'providers'
 ```php
-	Minhbang\\LaravelUser\\UserServiceProvider::class,
+	Minhbang\LaravelUser\UserServiceProvider::class,
 ```
 
 * Publish config và database migrations
