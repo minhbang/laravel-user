@@ -6,7 +6,7 @@
             <div class="logo">
                 <div class="app-name"> {{setting('app.name_short') }}</div>
             </div>
-            <h3 class="text-danger">{{trans('common.cpanel')}}</h3>
+            <h3 class="text-danger">{{trans('backend.cpanel')}}</h3>
             @if ($message = Session::get('message'))
                 <div class="alert alert-{{ $message['type'] }}">
                     {!! $message['content'] !!}
