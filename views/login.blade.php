@@ -1,4 +1,4 @@
-@extends('backend::layouts.blank')
+@extends('backend.layouts.blank')
 
 @section('content')
     <div class="middle-box text-center loginscreen">
