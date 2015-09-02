@@ -2,6 +2,7 @@
 
 namespace Minhbang\LaravelUser;
 
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -16,7 +17,7 @@ class UserServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(Router $router)
     {
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'user');
         $this->loadViewsFrom(__DIR__ . '/../views', 'user');
@@ -37,6 +38,10 @@ class UserServiceProvider extends ServiceProvider
         if (config('user.add_route') && !$this->app->routesAreCached()) {
             require __DIR__ . '/routes.php';
         }
+        // pattern filters
+        $router->pattern('user', '[0-9]+');
+        // model bindings
+        $router->model('user', 'Minhbang\LaravelUser\User');
 
         // Validator rule kiểm tra password hiện tại
         $this->app['validator']->extend(
