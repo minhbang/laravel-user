@@ -30,11 +30,18 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        $user = user();
-        if ($user && $user->isAdmin()) {
-            return $next($request);
-        } else{
-            abort(403, trans('common.forbidden'));
+        if ($user = user()) {
+            if ($user->isAdmin()) {
+                return $next($request);
+            } else {
+                abort(403, trans('common.forbidden'));
+            }
+        } else {
+            if ($request->ajax()) {
+                return response('Unauthorized.', 401);
+            } else {
+                return redirect()->guest('auth/login');
+            }
         }
     }
 }
