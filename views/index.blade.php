@@ -45,11 +45,11 @@
         <div class="ibox-tools"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></div>
     </div>
     <div class="ibox-content">
-    {!! $table->render('kit::_datatable_template') !!}
+    {!! $table->render('_datatable') !!}
     </div>
 </div>
 @stop
 
 @section('script')
-    @include('kit::_datatable_script',['name' => trans('user::user.user'), 'data_url' => route('backend.user.data')])
+    @include('_datatable_script',['name' => trans('user::user.user'), 'data_url' => route('backend.user.data')])
 @stop
