@@ -35,6 +35,7 @@ Route::group(
         );
         // User Manage
         Route::get('user/data', ['as' => 'backend.user.data', 'uses' => 'UserController@data']);
+        Route::post('user/{user}/quick_update', ['as' => 'backend.user.quick_update', 'uses' => 'UserController@quickUpdate']);
         Route::resource('user', 'UserController');
     }
 );

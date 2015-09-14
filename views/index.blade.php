@@ -51,5 +51,22 @@
 @stop
 
 @section('script')
-    @include('_datatable_script',['name' => trans('user::user.user'), 'data_url' => route('backend.user.data')])
+<script type="text/javascript">
+    function datatableDrawCallback(oTable) {
+        oTable.find('a.quick-update').quickUpdate({
+            url: '{{ route('backend.user.quick_update', ['user' => '__ID__']) }}',
+            container: '#user-manage',
+            element_class: 'input-width-lg',
+            dataTable: oTable
+        });
+    };
+</script>
+    @include(
+        '_datatable_script',
+        [
+            'name' => trans('user::user.user'),
+            'data_url' => route('backend.user.data'),
+            'drawCallback' => 'window.datatableDrawCallback'
+        ]
+    )
 @stop

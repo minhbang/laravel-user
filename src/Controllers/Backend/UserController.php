@@ -2,6 +2,7 @@
 namespace Minhbang\LaravelUser\Controllers\Backend;
 
 use Minhbang\LaravelKit\Extensions\BackendController;
+use Minhbang\LaravelKit\Traits\Controller\QuickUpdateActions;
 use Minhbang\LaravelUser\User;
 use Request;
 use Datatable;
@@ -15,6 +16,8 @@ use Minhbang\LaravelUser\Requests\UserRequest;
  */
 class UserController extends BackendController
 {
+    use QuickUpdateActions;
+
     public function __construct()
     {
         parent::__construct(config('user.middlewares.user'));
@@ -44,19 +47,56 @@ class UserController extends BackendController
             ->addColumn(
                 'username',
                 function (User $model) {
-                    return $model->username;
+                    if ($model->isAdmin()) {
+                        return $model->username;
+                    } else {
+                        return Html::linkExt(
+                            "#{$model->id}",
+                            $model->username,
+                            [
+                                'class'         => 'quick-update',
+                                'data-qu_attr'  => 'username',
+                                'data-qu_title' => trans("user::user.username")
+                            ]
+                        );
+                    }
                 }
             )
             ->addColumn(
                 'name',
                 function (User $model) {
-                    return $model->name;
+                    if ($model->isAdmin()) {
+                        return $model->name;
+                    } else {
+                        return Html::linkExt(
+                            "#{$model->id}",
+                            $model->name,
+                            [
+                                'class'         => 'quick-update',
+                                'data-qu_attr'  => 'name',
+                                'data-qu_title' => trans("user::user.name")
+                            ]
+                        );
+                    }
                 }
             )
             ->addColumn(
                 'email',
                 function (User $model) {
-                    return $model->email;
+                    if ($model->isAdmin()) {
+                        return $model->email;
+                    } else {
+                        return Html::linkExt(
+                            "#{$model->id}",
+                            $model->email,
+                            [
+                                'class'         => 'quick-update',
+                                'data-qu_attr'  => 'email',
+                                'data-qu_title' => trans("user::user.email"),
+                                'qu_placement' => 'left'
+                            ]
+                        );
+                    }
                 }
             )
             ->addColumn(
@@ -238,5 +278,36 @@ class UserController extends BackendController
                 abort(403, trans('user::user.not_self_update'));
             }
         }
+    }
+
+    /**
+     * Các attributes cho phéo x-editable
+     *
+     * @return array
+     */
+    protected function quickUpdateAttributes()
+    {
+        return [
+            'username' => [
+                'rules' => 'required|min:4|max:20|alpha_dash|unique:users,username,__ID__',
+                'label' => trans('user::user.username')
+            ],
+            'name'     => ['rules' => 'required|min:4', 'label' => trans('user::user.name')],
+            'email'    => ['rules' => 'required|email|unique:users,email,__ID__', 'label' => trans('user::user.email')],
+        ];
+    }
+
+    /**
+     * Không cho quick update với admin
+     * và new username của user khác không được = 'admin'
+     *
+     * @param \Minhbang\LaravelUser\User $user
+     * @param string $attribute
+     * @param string $value
+     * @return bool
+     */
+    protected function quickUpdateAllowed($user, $attribute, $value)
+    {
+        return ($user->username != 'admin') && ($attribute != 'username' || $value != 'admin');
     }
 }
