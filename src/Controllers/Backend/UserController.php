@@ -31,7 +31,7 @@ class UserController extends BackendController
     public function data()
     {
         /** @var User $query */
-        $query = User::orderUpdated();
+        $query = User::adminFirst()->orderUpdated();
         if (Request::has('search_form')) {
             $query = $query
                 ->searchWhereBetween('users.created_at', 'mb_date_vn2mysql')
@@ -48,15 +48,15 @@ class UserController extends BackendController
                 'username',
                 function (User $model) {
                     if ($model->isAdmin()) {
-                        return $model->username;
+                        return "<span class=\"text-danger\">{$model->username}</span>";
                     } else {
-                        return Html::linkExt(
-                            "#{$model->id}",
+                        return Html::linkQuickUpdate(
+                            $model->id,
                             $model->username,
                             [
-                                'class'         => 'quick-update',
-                                'data-qu_attr'  => 'username',
-                                'data-qu_title' => trans("user::user.username")
+                                'attr'  => 'username',
+                                'title' => trans("user::user.username"),
+                                'class' => 'w-sm',
                             ]
                         );
                     }
@@ -66,15 +66,15 @@ class UserController extends BackendController
                 'name',
                 function (User $model) {
                     if ($model->isAdmin()) {
-                        return $model->name;
+                        return "<span class=\"text-danger\">{$model->name}</span>";
                     } else {
-                        return Html::linkExt(
-                            "#{$model->id}",
+                        return Html::linkQuickUpdate(
+                            $model->id,
                             $model->name,
                             [
-                                'class'         => 'quick-update',
-                                'data-qu_attr'  => 'name',
-                                'data-qu_title' => trans("user::user.name")
+                                'attr'  => 'name',
+                                'title' => trans("user::user.name"),
+                                'class' => 'w-md',
                             ]
                         );
                     }
@@ -84,16 +84,16 @@ class UserController extends BackendController
                 'email',
                 function (User $model) {
                     if ($model->isAdmin()) {
-                        return $model->email;
+                        return "<span class=\"text-danger\">{$model->email}</span>";
                     } else {
-                        return Html::linkExt(
-                            "#{$model->id}",
+                        return Html::linkQuickUpdate(
+                            $model->id,
                             $model->email,
                             [
-                                'class'         => 'quick-update',
-                                'data-qu_attr'  => 'email',
-                                'data-qu_title' => trans("user::user.email"),
-                                'qu_placement' => 'left'
+                                'attr'      => 'email',
+                                'title'     => trans("user::user.email"),
+                                'placement' => 'left',
+                                'class'     => 'w-md',
                             ]
                         );
                     }

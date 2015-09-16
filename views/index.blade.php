@@ -56,7 +56,6 @@
         oTable.find('a.quick-update').quickUpdate({
             url: '{{ route('backend.user.quick_update', ['user' => '__ID__']) }}',
             container: '#user-manage',
-            element_class: 'input-width-lg',
             dataTable: oTable
         });
     };
