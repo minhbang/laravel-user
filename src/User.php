@@ -1,5 +1,6 @@
 <?php
 namespace Minhbang\LaravelUser;
+
 use Minhbang\LaravelKit\Extensions\Model;
 use Minhbang\LaravelKit\Traits\Model\DatetimeQuery;
 use Minhbang\LaravelKit\Traits\Model\SearchQuery;
@@ -22,6 +23,7 @@ use Laracasts\Presenter\PresentableTrait;
  * @property \Carbon\Carbon $updated_at
  * @property-read mixed $code
  * @property-read mixed $resource_name
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User adminFirst()
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereName($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereUsername($value)
@@ -110,5 +112,17 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         if (!empty($value)) {
             $this->attributes['password'] = bcrypt($value);
         }
+    }
+
+    /**
+     * Admin luôn đứng đầu
+     * Chú ý gọi query này trước các quyery orderBy khác
+     *
+     * @param \Illuminate\Database\Query\Builder $query
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function scopeAdminFirst($query)
+    {
+        return $query->orderByRaw("`users`.`username`='admin' DESC");
     }
 }
