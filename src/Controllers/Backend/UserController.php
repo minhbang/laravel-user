@@ -281,7 +281,7 @@ class UserController extends BackendController
     }
 
     /**
-     * Các attributes cho phéo x-editable
+     * Các attributes cho phéo quick-update
      *
      * @return array
      */
