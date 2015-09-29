@@ -1,37 +1,25 @@
 <?php
 if (!function_exists('user')) {
     /**
-     * Lấy user đã đăng nhập, hoặc chỉ $attribute
+     * Lấy user model: đã đăng nhập, hoặc có $id
+     * Hoặc chỉ $attribute
      *
      * @param string|null $attribute
+     * @param int|null $id
      * @return \Minhbang\LaravelUser\User|mixed|null
      */
-    function user($attribute = null)
-    {
-        if ($user = auth()->user()) {
-            return $attribute ? $user->$attribute : $user;
-        } else {
-            return null;
-        }
-    }
-}
-if (!function_exists('user_model')) {
-    /**
-     * Lấy user model
-     *
-     * @param int|null $id
-     * @return \Minhbang\LaravelUser\User|null
-     */
-    function user_model($id = null)
+    function user($attribute = null, $id = null)
     {
         if ($id) {
             $class = config('auth.model');
-            return $class::find($id);
+            $user = $class::find($id);
         } else {
-            return auth()->user();
+            $user = auth()->user();
         }
+        return $user ? ($attribute ? $user->$attribute : $user) : null;
     }
 }
+
 if (!function_exists('user_public_path')) {
     /**
      * Thư mục 'public' của user
@@ -42,11 +30,12 @@ if (!function_exists('user_public_path')) {
      * @param string $path
      * @param bool $full path đầy đủ
      * @param bool $ignore_error
+     * @param int|null $id
      * @return string|array
      */
-    function user_public_path($path = '', $full = false, $ignore_error = false)
+    function user_public_path($path = '', $full = false, $ignore_error = false, $id = null)
     {
-        if ($code = user('code')) {
+        if ($code = user('code', $id)) {
             $path = '/' . setting('system.public_files') . "/$code" . ($path ? "/$path" : '');
             $path_full = public_path() . $path;
             return check_path($path_full, $ignore_error, $full ? $path_full : $path);
@@ -65,11 +54,12 @@ if (!function_exists('user_storage_path')) {
      *
      * @param string $path
      * @param bool $ignore_error
+     * @param int|null $id
      * @return string|array
      */
-    function user_storage_path($path = '', $ignore_error = false)
+    function user_storage_path($path = '', $ignore_error = false, $id = null)
     {
-        if ($username = user('username')) {
+        if ($username = user('username', $id)) {
             $path = storage_path("data/{$username}" . ($path ? "/$path" : ''));
             return check_path($path, $ignore_error, $path);
         } else {
