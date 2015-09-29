@@ -15,6 +15,7 @@ class UserServiceProvider extends ServiceProvider
     /**
      * Perform post-registration booting of services.
      *
+     * @param \Illuminate\Routing\Router $router
      * @return void
      */
     public function boot(Router $router)

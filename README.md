@@ -4,6 +4,15 @@ Package quản lý User cho Laravel Application
 
 ## Install
 
+* Cài đặt package **vinkla/hashids**, cấu hình connection **user** như sau:
+```php
+'user' => [
+	'salt'     => config('app.key') . 'user',
+	'length'   => 3,
+	'alphabet' => '1234567890abcdefghijklmnopqrstuvwxyz',
+],
+```
+
 * **Thêm vào file composer.json của app**
 ```json
 	"repositories": [
