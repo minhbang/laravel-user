@@ -14,7 +14,7 @@
             @endif
             @if ($errors->any())
                 <div class="alert alert-danger">
-                    <strong>{{ trans('kit::errors.whoops') }}</strong><br>{!! $errors->first('email') !!}
+                    <strong>{{ trans('errors.whoops') }}</strong><br>{!! $errors->first('email') !!}
                 </div>
             @endif
             {!! Form::open(['class' => 'm-t']) !!}

@@ -9,7 +9,7 @@
 			<h3>{{trans('user::account.reset_password')}}</h3>
             @if (count($errors) > 0)
 				<div class="alert alert-danger">
-					<strong>{{ trans('kit::errors.whoops') }}</strong><br>
+					<strong>{{ trans('errors.whoops') }}</strong><br>
                     @foreach ($errors->all() as $error)
                         <p>{{ $error }}</p>
                     @endforeach
