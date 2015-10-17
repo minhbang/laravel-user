@@ -20,6 +20,25 @@ if (!function_exists('user')) {
     }
 }
 
+if (!function_exists('is_admin')) {
+    /**
+     * Kiểm tra user $id hoặc hiện tại có phải là Admin
+     * @param int|null $id
+     * @return bool
+     */
+    function is_admin($id = null)
+    {
+        if ($id) {
+            $class = config('auth.model');
+            $user = $class::find($id);
+        } else {
+            $user = auth()->user();
+        }
+        /** @var \Minhbang\LaravelUser\User $user */
+        return $user ? $user->isAdmin() : false;
+    }
+}
+
 if (!function_exists('user_public_path')) {
     /**
      * Thư mục 'public' của user
