@@ -2,6 +2,8 @@
 
 Package quản lý User cho Laravel Application
 
+> **Branch 1.0**: _Không có user group_
+
 ## Install
 
 * Cài đặt package **vinkla/hashids**, cấu hình connection **user** như sau:
