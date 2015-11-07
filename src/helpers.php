@@ -6,6 +6,7 @@ if (!function_exists('user')) {
      *
      * @param string|null $attribute
      * @param int|null $id
+     *
      * @return \Minhbang\LaravelUser\User|mixed|null
      */
     function user($attribute = null, $id = null)
@@ -20,10 +21,26 @@ if (!function_exists('user')) {
     }
 }
 
+if (!function_exists('user_is_author_of')) {
+    /**
+     * @param mixed $model
+     * @param null|int $id
+     *
+     * @return \Illuminate\Contracts\Auth\Authenticatable|null
+     */
+    function user_is_author_of($model, $id = null)
+    {
+        $id = $id ?: user('id');
+        return $id && ($id === $model->user_id);
+    }
+}
+
 if (!function_exists('is_admin')) {
     /**
      * Kiểm tra user $id hoặc hiện tại có phải là Admin
+     *
      * @param int|null $id
+     *
      * @return bool
      */
     function is_admin($id = null)
@@ -50,6 +67,7 @@ if (!function_exists('user_public_path')) {
      * @param bool $full path đầy đủ
      * @param bool $ignore_error
      * @param int|null $id
+     *
      * @return string|array
      */
     function user_public_path($path = '', $full = false, $ignore_error = false, $id = null)
@@ -74,6 +92,7 @@ if (!function_exists('user_storage_path')) {
      * @param string $path
      * @param bool $ignore_error
      * @param int|null $id
+     *
      * @return string|array
      */
     function user_storage_path($path = '', $ignore_error = false, $id = null)
