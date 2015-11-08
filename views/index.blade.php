@@ -8,7 +8,7 @@
             route('backend.user.create'),
             trans('user::user.create'),
             [
-                'title' => trans('user::user.create'),
+                'title' => trans('user::user.create').": <span class=\"text-warning\">$typeName</span>",
                 'label' => trans('common.save'),
                 'icon'  => 'fa-user',
             ],
@@ -42,7 +42,6 @@
 <div class="ibox ibox-table">
     <div class="ibox-title">
         <h5>{!! trans('user::user.manage_title') !!}</h5>
-        <div class="ibox-tools"><a class="collapse-link"><i class="fa fa-chevron-up"></i></a></div>
     </div>
     <div class="ibox-content">
     {!! $table->render('_datatable') !!}

@@ -18,9 +18,81 @@ class UserController extends BackendController
 {
     use QuickUpdateActions;
 
+    /**
+     * Quản lý user group
+     *
+     * @var \Minhbang\LaravelUser\GroupManager
+     */
+    protected $manager;
+    /**
+     * @var string user group type hiện tại
+     */
+    protected $type;
+
     public function __construct()
     {
         parent::__construct(config('user.middlewares.user'));
+        $this->switchGroupType();
+    }
+
+    /**
+     * @param null|string $type
+     */
+    protected function switchGroupType($type = null)
+    {
+        $key = 'backend.user.group_type';
+        $type = $type ?: session($key, 'normal');
+        session([$key => $type]);
+        $this->manager = app('user-manager')->groups($type);
+        $this->type = $type;
+    }
+
+    /**
+     * @param null|string $type
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     * @throws \Exception
+     */
+    public function index($type = null)
+    {
+        $this->switchGroupType($type);
+        $tableOptions = [
+            'id'        => 'user-manage',
+            'row_index' => true,
+        ];
+        $options = [
+            'aoColumnDefs' => [
+                ['sClass' => 'min-width', 'aTargets' => [0, 1, -1]],
+            ],
+        ];
+        $table = Datatable::table()
+            ->addColumn(
+                '#',
+                trans('user::user.username'),
+                trans('user::user.name'),
+                trans('user::user.email'),
+                trans('common.actions')
+            )
+            ->setOptions($options)
+            ->setCustomValues($tableOptions);
+
+        $typeName = $this->manager->typeName();
+        $buttons = [];
+        foreach ($this->manager->typeNames() as $type => $name) {
+            $buttons[] = [
+                route('backend.user.type', ['type' => $type]),
+                $name,
+                ['type' => $type == $this->type ? 'info' : 'default', 'size' => 'xs'],
+            ];
+        }
+
+        $this->buildHeading(
+            [trans('user::user.manage') . ":", $typeName],
+            'fa-users',
+            ['#' => trans('user::user.user')],
+            $buttons
+        );
+        return view('user::index', compact('tableOptions', 'options', 'table', 'typeName'));
     }
 
     /**
@@ -31,7 +103,7 @@ class UserController extends BackendController
     public function data()
     {
         /** @var User $query */
-        $query = User::adminFirst()->orderUpdated();
+        $query = User::inGroup($this->manager->typeRoot())->adminFirst()->orderUpdated();
         if (Request::has('search_form')) {
             $query = $query
                 ->searchWhereBetween('users.created_at', 'mb_date_vn2mysql')
@@ -118,35 +190,6 @@ class UserController extends BackendController
             ->make();
     }
 
-    /**
-     * @return \Illuminate\View\View
-     * @throws \Exception
-     * @throws \Laracasts\Presenter\Exceptions\PresenterException
-     */
-    public function index()
-    {
-        $tableOptions = [
-            'id'        => 'user-manage',
-            'row_index' => true,
-        ];
-        $options = [
-            'aoColumnDefs' => [
-                ['sClass' => 'min-width', 'aTargets' => [0, 1, -1]],
-            ],
-        ];
-        $table = Datatable::table()
-            ->addColumn(
-                '#',
-                trans('user::user.username'),
-                trans('user::user.name'),
-                trans('user::user.email'),
-                trans('common.actions')
-            )
-            ->setOptions($options)
-            ->setCustomValues($tableOptions);
-        $this->buildHeading(trans('user::user.manage'), 'fa-users', ['#' => trans('user::user.user')]);
-        return view('user::index', compact('tableOptions', 'options', 'table'));
-    }
 
     /**
      * @return \Illuminate\View\View
@@ -157,6 +200,7 @@ class UserController extends BackendController
         $user = new User();
         $url = route('backend.user.store');
         $method = 'post';
+        $groups = $this->manager->selectize();
         $this->buildHeading(
             trans('common.create_object', ['name' => trans('user::user.user')]),
             'plus-sign',
@@ -165,11 +209,12 @@ class UserController extends BackendController
                 '#'                         => trans('common.create'),
             ]
         );
-        return view('user::form', compact('user', 'url', 'method'));
+        return view('user::form', compact('user', 'url', 'method', 'groups'));
     }
 
     /**
      * @param \Minhbang\LaravelUser\Requests\UserRequest $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function store(UserRequest $request)
@@ -182,7 +227,7 @@ class UserController extends BackendController
             [
                 'message'     => [
                     'type'    => 'success',
-                    'content' => trans('common.create_object_success', ['name' => trans('user::user.user')])
+                    'content' => trans('common.create_object_success', ['name' => trans('user::user.user')]),
                 ],
                 'reloadTable' => 'user-manage',
             ]
@@ -192,6 +237,7 @@ class UserController extends BackendController
 
     /**
      * @param \Minhbang\LaravelUser\User $user
+     *
      * @return \Illuminate\View\View
      */
     public function show(User $user)
@@ -201,6 +247,7 @@ class UserController extends BackendController
 
     /**
      * @param \Minhbang\LaravelUser\User $user
+     *
      * @return \Illuminate\View\View
      * @throws \Laracasts\Presenter\Exceptions\PresenterException
      */
@@ -223,6 +270,7 @@ class UserController extends BackendController
     /**
      * @param \Minhbang\LaravelUser\Requests\UserRequest $request
      * @param \Minhbang\LaravelUser\User $user
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function update(UserRequest $request, User $user)
@@ -235,7 +283,7 @@ class UserController extends BackendController
             [
                 'message'     => [
                     'type'    => 'success',
-                    'content' => trans('common.update_object_success', ['name' => trans('user::user.user')])
+                    'content' => trans('common.update_object_success', ['name' => trans('user::user.user')]),
                 ],
                 'reloadTable' => 'user-manage',
             ]
@@ -244,6 +292,7 @@ class UserController extends BackendController
 
     /**
      * @param \Minhbang\LaravelUser\User $user
+     *
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function destroy(User $user)
@@ -271,7 +320,7 @@ class UserController extends BackendController
                 die(json_encode(
                     [
                         'type'    => 'error',
-                        'content' => trans('user::user.not_self_update')
+                        'content' => trans('user::user.not_self_update'),
                     ]
                 ));
             } else {
@@ -290,7 +339,7 @@ class UserController extends BackendController
         return [
             'username' => [
                 'rules' => 'required|min:4|max:20|alpha_dash|unique:users,username,__ID__',
-                'label' => trans('user::user.username')
+                'label' => trans('user::user.username'),
             ],
             'name'     => ['rules' => 'required|min:4', 'label' => trans('user::user.name')],
             'email'    => ['rules' => 'required|email|unique:users,email,__ID__', 'label' => trans('user::user.email')],
@@ -304,6 +353,7 @@ class UserController extends BackendController
      * @param \Minhbang\LaravelUser\User $user
      * @param string $attribute
      * @param string $value
+     *
      * @return bool
      */
     protected function quickUpdateAllowed($user, $attribute, $value)

@@ -3,6 +3,7 @@
 namespace Minhbang\LaravelUser;
 
 use Illuminate\Routing\Router;
+use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -16,6 +17,7 @@ class UserServiceProvider extends ServiceProvider
      * Perform post-registration booting of services.
      *
      * @param \Illuminate\Routing\Router $router
+     *
      * @return void
      */
     public function boot(Router $router)
@@ -27,6 +29,9 @@ class UserServiceProvider extends ServiceProvider
                 __DIR__ . '/../views'                                => base_path('resources/views/vendor/user'),
                 __DIR__ . '/../lang'                                 => base_path('resources/lang/vendor/user'),
                 __DIR__ . '/../config/user.php'                      => config_path('user.php'),
+                __DIR__ . '/../database/migrations/' .
+                '2014_10_11_000000_create_user_groups_table.php'     =>
+                    database_path('migrations/' . '2014_10_11_000000_create_user_groups_table.php'),
                 __DIR__ . '/../database/migrations/' .
                 '2014_10_12_000000_create_users_table.php'           =>
                     database_path('migrations/' . '2014_10_12_000000_create_users_table.php'),
@@ -41,8 +46,10 @@ class UserServiceProvider extends ServiceProvider
         }
         // pattern filters
         $router->pattern('user', '[0-9]+');
+        $router->pattern('user_group', '[0-9]+');
         // model bindings
         $router->model('user', 'Minhbang\LaravelUser\User');
+        $router->model('user_group', 'Minhbang\LaravelUser\Group');
 
         // Validator rule kiểm tra password hiện tại
         $this->app['validator']->extend(
@@ -67,5 +74,29 @@ class UserServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/user.php', 'user');
+        $this->app['user-manager'] = $this->app->share(
+            function () {
+                return new UserManager(
+                    config('user.group_types'),
+                    config('user.group_max_depth')
+                );
+            }
+        );
+        // add AccessControl alias
+        $this->app->booting(
+            function () {
+                AliasLoader::getInstance()->alias('UserManager', UserManagerFacade::class);
+            }
+        );
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return ['user-manager'];
     }
 }

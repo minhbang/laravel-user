@@ -1,6 +1,15 @@
 @extends('backend.layouts.modal')
 @section('content')
 {!! Form::model($user, ['class' => 'form-horizontal','url' => $url, 'method' => $method]) !!}
+<div class="form-group{{ $errors->has('group_id') ? ' has-error':'' }}">
+    {!! Form::label('group_id', trans('user::user.group_id'), ['class' => 'col-xs-3 control-label']) !!}
+    <div class="col-xs-9">
+        {!! Form::select('group_id', $groups, null, ['class' => 'form-control selectize-tree']) !!}
+        @if($errors->has('group_id'))
+            <p class="help-block">{{ $errors->first('group_id') }}</p>
+        @endif
+    </div>
+</div>
 <div class="form-group{{ $errors->has('username') ? ' has-error':'' }}">
     {!! Form::label('username', trans('user::user.username'), ['class' => 'col-xs-3 control-label']) !!}
     <div class="col-xs-9">

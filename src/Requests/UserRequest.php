@@ -11,6 +11,7 @@ class UserRequest extends Request
         'name'     => 'required|min:4',
         'email'    => 'required|email|unique:users',
         'password' => 'between:4,16',
+        'group_id' => 'required|integer|min:1|exists:user_groups,id',
     ];
 
     /**

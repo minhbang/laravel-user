@@ -18,11 +18,16 @@ use Laracasts\Presenter\PresentableTrait;
  * @property string $username
  * @property string $email
  * @property string $password
+ * @property integer $group_id
  * @property string $remember_token
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read mixed $code
+ * @property-read string $type
+ * @property-read string $type_name
  * @property-read mixed $resource_name
+ * @property-read \Minhbang\LaravelUser\Group $group
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User inGroup($group)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User adminFirst()
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereName($value)
@@ -52,12 +57,59 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     use PresentableTrait;
     protected $presenter = UserPresenter::class;
     protected $table = 'users';
-    protected $fillable = ['name', 'username', 'email', 'password'];
+    protected $fillable = ['name', 'username', 'email', 'password', 'group_id'];
     protected $hidden = ['password', 'remember_token'];
+
+    /**
+     * @return string
+     */
+    public function getTypeAttribute()
+    {
+        $group = $this->group;
+        return $group ? $group->type : null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeNameAttribute()
+    {
+        $group = $this->group;
+        return $group ? $group->type_name : null;
+    }
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function group()
+    {
+        return $this->belongsTo('Minhbang\LaravelUser\Group');
+    }
+
+
+    /**
+     * Tất cả user thuộc $group và con cháu của $group
+     *
+     * @param \Illuminate\Database\Query\Builder $query
+     * @param \Minhbang\LaravelUser\Group $group
+     *
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function scopeInGroup($query, $group = null)
+    {
+        if (is_null($group)) {
+            return $query->with('group');
+        }
+        $ids = $group->descendantsAndSelf()->lists('id')->all();
+        return $query->with('group')
+            ->whereIn("{$this->table}.group_id", $ids);
+    }
 
     /**
      * @param string $attribute
      * @param string $key
+     *
      * @return array
      */
     public static function getList($attribute = 'title', $key = 'id')
@@ -78,6 +130,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     /**
      * @param string $code
+     *
      * @return int
      */
     public static function getIdByCode($code)
@@ -88,6 +141,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * @param string $code
      * @param array $columns
+     *
      * @return \Illuminate\Support\Collection|null|static
      */
     public static function findByCode($code, $columns = ['*'])
@@ -119,6 +173,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * Chú ý gọi query này trước các quyery orderBy khác
      *
      * @param \Illuminate\Database\Query\Builder $query
+     *
      * @return \Illuminate\Database\Query\Builder
      */
     public function scopeAdminFirst($query)

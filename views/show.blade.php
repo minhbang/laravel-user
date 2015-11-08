@@ -6,6 +6,10 @@
         <td><strong>{{ $user->id}}</strong></td>
     </tr>
     <tr>
+        <td>{{ trans('user::user.type') }}</td>
+        <td class="text-navy"><strong>{{ $user->type_name }}</strong></td>
+    </tr>
+    <tr>
         <td>{{ trans('user::user.username') }}</td>
         <td><strong>{{ $user->username }}</strong></td>
     </tr>
