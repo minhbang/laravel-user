@@ -22,11 +22,6 @@ class AuthController extends Controller
     //The number of seconds to delay further login attempts.
     public $lockoutTime = 120;
 
-    public function __construct()
-    {
-        parent::__construct(config('user.middlewares.auth'));
-    }
-
     /**
      * Show the application login form.
      *

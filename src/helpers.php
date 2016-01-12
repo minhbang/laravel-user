@@ -4,55 +4,23 @@ if (!function_exists('user')) {
      * Lấy user model: đã đăng nhập, hoặc có $id
      * Hoặc chỉ $attribute
      *
-     * @param string|null $attribute
+     * @param int|string|null $attribute
      * @param int|null $id
      *
-     * @return \Minhbang\LaravelUser\User|mixed|null
+     * @return \Minhbang\LaravelUser\User|mixed
      */
     function user($attribute = null, $id = null)
     {
-        if ($id) {
-            $class = config('auth.model');
-            $user = $class::find($id);
-        } else {
-            $user = auth()->user();
+        // user($model) trả về $model
+        if (is_object($attribute)) {
+            return $attribute;
         }
-        return $user ? ($attribute ? $user->$attribute : $user) : null;
-    }
-}
-
-if (!function_exists('user_is_author_of')) {
-    /**
-     * @param mixed $model
-     * @param null|int $id
-     *
-     * @return \Illuminate\Contracts\Auth\Authenticatable|null
-     */
-    function user_is_author_of($model, $id = null)
-    {
-        $id = $id ?: user('id');
-        return $id && ($id === $model->user_id);
-    }
-}
-
-if (!function_exists('is_admin')) {
-    /**
-     * Kiểm tra user $id hoặc hiện tại có phải là Admin
-     *
-     * @param int|null $id
-     *
-     * @return bool
-     */
-    function is_admin($id = null)
-    {
-        if ($id) {
-            $class = config('auth.model');
-            $user = $class::find($id);
-        } else {
-            $user = auth()->user();
+        // user($id) trả về find($id)
+        if (is_numeric($attribute)) {
+            $id = $attribute;
+            $attribute = null;
         }
-        /** @var \Minhbang\LaravelUser\User $user */
-        return $user ? $user->isAdmin() : false;
+        return app('user-manager')->user($attribute, $id);
     }
 }
 

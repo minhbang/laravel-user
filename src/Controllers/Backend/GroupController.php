@@ -26,7 +26,7 @@ class GroupController extends BackendController
 
     public function __construct()
     {
-        parent::__construct(config('user.middlewares.group'));
+        parent::__construct();
         $this->switchType();
     }
 

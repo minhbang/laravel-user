@@ -19,7 +19,8 @@ use Minhbang\LaravelKit\Extensions\NestedSetModel;
  * @property-read string $type
  * @property-read string $type_name
  * @property-read \Minhbang\LaravelUser\Group $parent
- * @property-read \Minhbang\LaravelUser\User[] $users
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Minhbang\Category\Item[] $categories
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Minhbang\LaravelUser\User[] $users
  * @property-read \Illuminate\Database\Eloquent\Collection|\Minhbang\LaravelUser\Group[] $children
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\Group whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\Group whereParentId($value)
@@ -49,11 +50,43 @@ class Group extends NestedSetModel
     public $timestamps = false;
 
     /**
-     * @return \Minhbang\LaravelKit\Extensions\HasManyNestedSet
+     * Users trực tiếp ($immediate) hay tòan bộ (bao gồm các group con)
+     *
+     * @param bool $immediate
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany|\Minhbang\LaravelKit\Extensions\HasManyNestedSet
      */
-    public function users()
+    public function users($immediate = false)
     {
-        return $this->hasManyNestedSet('Minhbang\LaravelUser\User');
+        $model = config('auth.providers.users.model');
+        return $immediate ? $this->hasMany($model) : $this->hasManyNestedSet($model);
+    }
+
+    /**
+     * Danh sách categories group được phép quản lý
+     *
+     * @param bool $immediate
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany|\Illuminate\Database\Query\Builder
+     */
+    public function categories($immediate = false)
+    {
+        // Categories trực tiếp ($immediate) (được gán qua categories.moderator_id)
+        /** @var \Illuminate\Database\Eloquent\Relations\HasMany|\Illuminate\Database\Query\Builder $query */
+        $query = $this->hasMany('Minhbang\Category\Item', 'moderator_id');
+        if (!$immediate) {
+            /** @var \Minhbang\Category\Item[] $categories */
+            $categories = $this->categories(true)->get();
+            $ids = [];
+            // Lấy IDs các categories con của các categories trực tiếp
+            foreach ($categories as $category) {
+                $ids = array_merge($ids, $category->descendants()->lists('id'));
+            }
+            if ($ids) {
+                $query->orWhereIn('categories.id', $ids);
+            }
+        }
+        return $query;
     }
 
     /**
@@ -91,6 +124,25 @@ class Group extends NestedSetModel
      */
     public static function findBySystemName($system_name)
     {
-        return static::system_name($system_name)->first();
+        return static::systemName($system_name)->first();
+    }
+
+    /**
+     * Là có quan quản lý của danh mục $category
+     * - Được giao quản lý danh mục cha (root1, depth = 1) của $category
+     *
+     * @param \Minhbang\Category\Item $category
+     *
+     * @return bool
+     */
+    public function isModeratorOf($category)
+    {
+        if ($this->exists) {
+            /** @var \Minhbang\Category\Item $category_root */
+            $category_root = $category->getRoot1();
+            return $category_root && $category_root->moderator_id == $this->id;
+        } else {
+            return false;
+        }
     }
 }

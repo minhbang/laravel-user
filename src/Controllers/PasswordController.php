@@ -15,11 +15,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class PasswordController extends Controller
 {
 
-    public function __construct()
-    {
-        parent::__construct(config('user.middlewares.password'));
-    }
-
     /**
      * Display the form to request a password reset link.
      *

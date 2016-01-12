@@ -76,12 +76,16 @@ class GroupManager
     }
 
     /**
+     * Lấy danh sách cơ quan, đơn vị chính, level = 1
+     *
      * @param string $attribute
      * @param string $key
+     *
+     * @return array
      */
     public function listRoots($attribute = 'full_name', $key = 'id')
     {
-        return $this->_type_root->immediateDescendants()->lists($attribute, $key)->all();
+        return $this->roots()->lists($attribute, $key)->all();
     }
 
     /**

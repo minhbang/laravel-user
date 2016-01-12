@@ -21,6 +21,20 @@ class UserManager
     protected $group_types = [];
 
     /**
+     * Danh sách User models theo ID
+     *
+     * @var \Minhbang\LaravelUser\User[]
+     */
+    protected $users = [];
+
+    /**
+     * User model hiện tại
+     *
+     * @var \Minhbang\LaravelUser\User
+     */
+    protected $user = false;
+
+    /**
      * UserManager constructor.
      *
      * @param array $group_types
@@ -39,6 +53,8 @@ class UserManager
      * Lấy group manager của $type
      *
      * @param string|null $type
+     *
+     * @return \Minhbang\LaravelUser\GroupManager
      */
     public function groups($type = null)
     {
@@ -53,6 +69,38 @@ class UserManager
     }
 
     /**
+     * Danh sách cơ quan, đơn vị chính; phục vụ cho selectize
+     *
+     * @param string $attribute
+     * @param string $key
+     *
+     * @return array
+     */
+    public function selectizeGroups($attribute = 'full_name', $key = 'id')
+    {
+        $lists = $this->listGroups($attribute, $key);
+        return array_map(
+            function ($key, $value) {
+                return ['value' => $key, 'text' => $value];
+            },
+            array_keys($lists),
+            array_values($lists)
+        );
+    }
+
+    /**
+     * Danh sách cơ quan, đơn vị chính
+     *
+     * @param string $attribute
+     * @param string $key
+     *
+     * @return array
+     */
+    public function listGroups($attribute = 'full_name', $key = 'id')
+    {
+        return $this->groups()->listRoots($attribute, $key);
+    }
+    /**
      * @param string $type
      * @param mixed $default
      *
@@ -65,5 +113,35 @@ class UserManager
         } else {
             return $this->group_types;
         }
+    }
+
+    /**
+     * Lấy user model hiện tại (chưa đăng nhập thì tạo mới, !No DB save), hoặc có $id
+     * Hoặc chỉ $attribute
+     *
+     * @param string|null $attribute
+     * @param int|null $id
+     *
+     * @return \Minhbang\LaravelUser\User|mixed
+     */
+    public function user($attribute = null, $id = null)
+    {
+        $user_class = config('auth.providers.users.model');
+        if ($id) {
+            // User by ID
+            if (!isset($this->users[$id])) {
+                $this->users[$id] = $user_class::find($id);
+                $this->users[$id] = $this->users[$id] ?: new $user_class();
+            }
+            $user = $this->users[$id];
+        } else {
+            // User hiện tại
+            if ($this->user === false) {
+                $this->user = auth()->user();
+                $this->user = $this->user ?: new $user_class();
+            }
+            $user = $this->user;
+        }
+        return $attribute ? $user->$attribute : $user;
     }
 }

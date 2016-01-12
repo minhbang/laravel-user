@@ -34,9 +34,15 @@ Route::group(
             ]
         );
         // User Manage
-        Route::get('user/data', ['as' => 'backend.user.data', 'uses' => 'UserController@data']);
-        Route::post('user/{user}/quick_update', ['as' => 'backend.user.quick_update', 'uses' => 'UserController@quickUpdate']);
-        Route::get('user/of/{type}', ['as' => 'backend.user.type', 'uses' => 'UserController@index']);
+        Route::group(
+            ['prefix' => 'user', 'as' => 'backend.user.'],
+            function () {
+                Route::get('data', ['as' => 'data', 'uses' => 'UserController@data']);
+                Route::post('{user}/quick_update', ['as' => 'quick_update', 'uses' => 'UserController@quickUpdate']);
+                Route::get('of/{type}', ['as' => 'type', 'uses' => 'UserController@index']);
+                Route::get('select/{query}/{ignore?}', ['as' => 'select', 'uses' => 'UserController@select']);
+            }
+        );
         Route::resource('user', 'UserController');
 
         // User Group Manage
@@ -47,9 +53,9 @@ Route::group(
                 Route::get('{user_group}/create', 'GroupController@createChildOf');
                 Route::post('move', ['as' => 'move', 'uses' => 'GroupController@move']);
                 Route::post('{user_group}', ['as' => 'storeChildOf', 'uses' => 'GroupController@storeChildOf']);
+                Route::get('of/{type}', ['as' => 'type', 'uses' => 'GroupController@index']);
             }
         );
-        Route::get('user_group/of/{type}', ['as' => 'backend.user_group.type', 'uses' => 'GroupController@index']);
         Route::resource('user_group', 'GroupController');
     }
 );

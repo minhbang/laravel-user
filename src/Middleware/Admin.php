@@ -31,7 +31,7 @@ class Admin
     public function handle($request, Closure $next)
     {
         if ($user = user()) {
-            if ($user->isAdmin()) {
+            if ($user->inAdminGroup()) {
                 return $next($request);
             } else {
                 abort(403, trans('common.forbidden'));

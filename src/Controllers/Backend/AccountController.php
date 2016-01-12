@@ -19,7 +19,7 @@ class AccountController extends BackendController
      */
     public function __construct(Guard $auth)
     {
-        parent::__construct(config('user.middlewares.account'));
+        parent::__construct();
         $this->auth = $auth;
     }
 

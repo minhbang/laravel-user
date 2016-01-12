@@ -22,6 +22,10 @@
         <td><strong>{{ $user->email }}</strong></td>
     </tr>
     <tr>
+        <td>{{ trans('access-control::role.role') }}</td>
+        <td>{!! $user->present()->roles !!}</td>
+    </tr>
+    <tr>
         <td>{{ trans('common.created_at') }}</td>
         <td>{!! $user->present()->createdAt !!}</td>
     </tr>

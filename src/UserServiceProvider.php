@@ -55,13 +55,8 @@ class UserServiceProvider extends ServiceProvider
         $this->app['validator']->extend(
             'password_check',
             function ($attribute, $value, $parameters) {
-                //TODO: thay bằng user() helper
                 $user = $this->app['db']->table('users')->where('id', user('id'))->first();
-                if ($user && $this->app['hash']->check($value, $user->password)) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return $user && $this->app['hash']->check($value, $user->password);
             }
         );
     }

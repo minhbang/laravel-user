@@ -31,7 +31,7 @@ class UserController extends BackendController
 
     public function __construct()
     {
-        parent::__construct(config('user.middlewares.user'));
+        parent::__construct();
         $this->switchGroupType();
     }
 
@@ -62,7 +62,7 @@ class UserController extends BackendController
         ];
         $options = [
             'aoColumnDefs' => [
-                ['sClass' => 'min-width', 'aTargets' => [0, 1, -1]],
+                ['sClass' => 'min-width', 'aTargets' => [0, 1, -1, -2]],
             ],
         ];
         $table = Datatable::table()
@@ -71,6 +71,7 @@ class UserController extends BackendController
                 trans('user::user.username'),
                 trans('user::user.name'),
                 trans('user::user.email'),
+                trans('access-control::role.role'),
                 trans('common.actions')
             )
             ->setOptions($options)
@@ -119,7 +120,7 @@ class UserController extends BackendController
             ->addColumn(
                 'username',
                 function (User $model) {
-                    if ($model->isAdmin()) {
+                    if ($model->isSuperadmin()) {
                         return "<span class=\"text-danger\">{$model->username}</span>";
                     } else {
                         return Html::linkQuickUpdate(
@@ -137,7 +138,7 @@ class UserController extends BackendController
             ->addColumn(
                 'name',
                 function (User $model) {
-                    if ($model->isAdmin()) {
+                    if ($model->isSuperadmin()) {
                         return "<span class=\"text-danger\">{$model->name}</span>";
                     } else {
                         return Html::linkQuickUpdate(
@@ -155,7 +156,7 @@ class UserController extends BackendController
             ->addColumn(
                 'email',
                 function (User $model) {
-                    if ($model->isAdmin()) {
+                    if ($model->isSuperadmin()) {
                         return "<span class=\"text-danger\">{$model->email}</span>";
                     } else {
                         return Html::linkQuickUpdate(
@@ -172,11 +173,17 @@ class UserController extends BackendController
                 }
             )
             ->addColumn(
+                'roles',
+                function (User $model) {
+                    return $model->present()->roles;
+                }
+            )
+            ->addColumn(
                 'actions',
                 function (User $model) {
                     return user('id') == $model->id ? '' : Html::tableActions(
-                        'backend/user',
-                        $model->id,
+                        'backend.user',
+                        ['user' => $model->id],
                         "{$model->name} ({$model->username})",
                         trans('user::user.user'),
                         [
@@ -305,6 +312,19 @@ class UserController extends BackendController
                 'content' => trans('common.delete_object_success', ['name' => trans('user::user.user')]),
             ]
         );
+    }
+
+    /**
+     * Lấy danh sách users sử dụng cho selectize_user
+     *
+     * @param string $username
+     * @param null|string $ignore Những ID bỏ qua, phân cách ','
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function select($username, $ignore = null)
+    {
+        return response()->json(User::forSelectize($ignore)->findText('username', $username)->get()->all());
     }
 
     /**

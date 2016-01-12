@@ -26,6 +26,7 @@ class GroupPresenter extends Presenter
     public function actions($max_depth)
     {
         $name = trans('user::group.group');
+
         if ($this->entity->depth < $max_depth) {
             $child = '<a href="' . url("backend/user_group/{$this->entity->id}/create") . '"
                class="modal-link btn btn-primary btn-xs"
@@ -42,6 +43,13 @@ class GroupPresenter extends Presenter
                 <span class="glyphicon glyphicon-plus"></span>
             </a>';
         }
+
+        $users = '<a href="' . url("backend/user_group/{$this->entity->id}/users") . '"
+           data-toggle="tooltip"
+           class="modal-link btn btn-success btn-xs"
+           data-title="' . trans('common.object_details_view', ['name' => $name]) . '"
+           data-icon="align-justify"><span class="glyphicon glyphicon-list"></span>
+        </a>';
 
         $show = '<a href="' . url("backend/user_group/{$this->entity->id}") . '"
            data-toggle="tooltip"

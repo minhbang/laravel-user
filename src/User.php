@@ -1,6 +1,7 @@
 <?php
 namespace Minhbang\LaravelUser;
 
+use Minhbang\AccessControl\Traits\User\HasRole;
 use Minhbang\LaravelKit\Extensions\Model;
 use Minhbang\LaravelKit\Traits\Model\DatetimeQuery;
 use Minhbang\LaravelKit\Traits\Model\SearchQuery;
@@ -9,10 +10,12 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Laracasts\Presenter\PresentableTrait;
+use Minhbang\LaravelUser\Traits\HasGroup;
 
 /**
- * LaravelUser\User
+ * Class User
  *
+ * @package Minhbang\LaravelUser
  * @property integer $id
  * @property string $name
  * @property string $username
@@ -23,20 +26,20 @@ use Laracasts\Presenter\PresentableTrait;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read mixed $code
- * @property-read string $type
- * @property-read string $type_name
- * @property-read mixed $resource_name
- * @property-read \Minhbang\LaravelUser\Group $group
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User inGroup($group)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User adminFirst()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Minhbang\AccessControl\Models\Role[] $roles
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereName($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereUsername($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereEmail($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User wherePassword($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereGroupId($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereRememberToken($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User forSelectize($ignore = null, $take = 10)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User adminFirst()
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelKit\Extensions\Model except($id = null)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelKit\Extensions\Model findText($column, $text)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User orderCreated($direction = 'desc')
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User orderUpdated($direction = 'desc')
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User period($start = null, $end = null, $field = 'created_at', $end_if_day = false, $is_month = false)
@@ -55,55 +58,32 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     use DatetimeQuery;
     use SearchQuery;
     use PresentableTrait;
+    use HasRole;
+    use HasGroup;
+
     protected $presenter = UserPresenter::class;
     protected $table = 'users';
     protected $fillable = ['name', 'username', 'email', 'password', 'group_id'];
     protected $hidden = ['password', 'remember_token'];
 
     /**
-     * @return string
-     */
-    public function getTypeAttribute()
-    {
-        $group = $this->group;
-        return $group ? $group->type : null;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTypeNameAttribute()
-    {
-        $group = $this->group;
-        return $group ? $group->type_name : null;
-    }
-
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function group()
-    {
-        return $this->belongsTo('Minhbang\LaravelUser\Group');
-    }
-
-
-    /**
-     * Tất cả user thuộc $group và con cháu của $group
+     * Lấy $take user phục vụ selectize user
      *
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param \Minhbang\LaravelUser\Group $group
+     * @param \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User $query
+     * @param mixed|null $ignore
+     * @param int $take
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User
      */
-    public function scopeInGroup($query, $group = null)
+    public function scopeForSelectize($query, $ignore = null, $take = 50)
     {
-        if (is_null($group)) {
-            return $query->with('group');
-        }
-        $ids = $group->descendantsAndSelf()->lists('id')->all();
-        return $query->with('group')
-            ->whereIn("{$this->table}.group_id", $ids);
+        return $query->withGroup()->except($ignore)
+            ->select([
+                "{$this->table}.id",
+                "{$this->table}.name",
+                "{$this->table}.username",
+                "{$this->table_group}.full_name as group_name",
+            ])->take($take);
     }
 
     /**
@@ -117,7 +97,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return static::lists($attribute, $key)->all();
     }
 
-
     /**
      * id đã mã hóa, $user->code
      *
@@ -125,7 +104,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function getCodeAttribute()
     {
-        return encode_id($this->id, 'user');
+        return $this->id ? encode_id($this->id, 'user') : null;
     }
 
     /**
@@ -150,11 +129,45 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
+     * Là quản trị hệ thống
+     *
      * @return bool
      */
-    public function isAdmin()
+    public function isSuperadmin()
     {
         return $this->username === 'admin';
+    }
+
+    /**
+     * Thuộc nhóm Administrator: là Super Admin hoặc được gán role 'admin'
+     *
+     * @return bool
+     */
+    public function inAdminGroup()
+    {
+        return $this->exists && ($this->isSuperadmin() || $this->isOne('admin'));
+    }
+
+    /**
+     * Thuộc BGH, roles: hieu_truong, hieu_pho, chinh_uy
+     *
+     * @return bool
+     */
+    public function inBgh()
+    {
+        return $this->exists && $this->isOne('hieu_*|chinh_uy');
+    }
+
+    /**
+     * Có phải là người tạo $model không?
+     *
+     * @param mixed $model
+     *
+     * @return bool
+     */
+    public function isAuthorOf($model)
+    {
+        return $model->user_id && ($this->id === $model->user_id);
     }
 
     /**

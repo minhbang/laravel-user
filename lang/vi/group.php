@@ -1,7 +1,7 @@
 <?php
 return [
     'group'              => 'Đơn vị',
-    'manage'             => 'Quản lý Đơn vị',
+    'manage'             => 'Cơ cấu Tổ chức',
     'parent'             => 'Đơn vị cấp trên',
     'type'               => 'Phân loại',
     'system_name'        => 'Tên hệ thống',
