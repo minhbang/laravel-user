@@ -31,13 +31,13 @@ class UserServiceProvider extends ServiceProvider
                 __DIR__ . '/../config/user.php'                      => config_path('user.php'),
                 __DIR__ . '/../database/migrations/' .
                 '2014_10_11_000000_create_user_groups_table.php'     =>
-                    database_path('migrations/' . '2014_10_11_000000_create_user_groups_table.php'),
+                    database_path('migrations/2014_10_11_000000_create_user_groups_table.php'),
                 __DIR__ . '/../database/migrations/' .
                 '2014_10_12_000000_create_users_table.php'           =>
-                    database_path('migrations/' . '2014_10_12_000000_create_users_table.php'),
+                    database_path('migrations/2014_10_12_000000_create_users_table.php'),
                 __DIR__ . '/../database/migrations/' .
                 '2014_10_12_100000_create_password_resets_table.php' =>
-                    database_path('migrations/' . '2014_10_12_100000_create_password_resets_table.php'),
+                    database_path('migrations/2014_10_12_100000_create_password_resets_table.php'),
             ]
         );
 
@@ -56,6 +56,7 @@ class UserServiceProvider extends ServiceProvider
             'password_check',
             function ($attribute, $value, $parameters) {
                 $user = $this->app['db']->table('users')->where('id', user('id'))->first();
+
                 return $user && $this->app['hash']->check($value, $user->password);
             }
         );
