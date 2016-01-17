@@ -1,5 +1,5 @@
 <?php
-namespace Minhbang\LaravelUser\Requests;
+namespace Minhbang\User\Requests;
 
 use Minhbang\LaravelKit\Extensions\Request;
 
@@ -31,7 +31,7 @@ class UserRequest extends Request
      */
     public function rules()
     {
-        /** @var \Minhbang\LaravelUser\User $user */
+        /** @var \Minhbang\User\User $user */
         if ($user = $this->route('user')) {
             //update User
             $this->rules['username'] .= ',username,' . $user->id;

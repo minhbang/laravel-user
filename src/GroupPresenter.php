@@ -1,12 +1,12 @@
 <?php
-namespace Minhbang\LaravelUser;
+namespace Minhbang\User;
 
 use Laracasts\Presenter\Presenter;
 
 /**
  * Class GroupPresenter
  *
- * @package Minhbang\LaravelUser
+ * @package Minhbang\User
  */
 class GroupPresenter extends Presenter
 {

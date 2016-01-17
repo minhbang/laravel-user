@@ -1,5 +1,5 @@
 <?php
-namespace Minhbang\LaravelUser\Requests;
+namespace Minhbang\User\Requests;
 
 use Minhbang\LaravelKit\Extensions\Request;
 

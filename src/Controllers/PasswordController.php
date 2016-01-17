@@ -1,5 +1,5 @@
 <?php
-namespace Minhbang\LaravelUser\Controllers;
+namespace Minhbang\User\Controllers;
 
 use Minhbang\LaravelKit\Extensions\Controller;
 use Session;
@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * Class PasswordController
  *
- * @package Minhbang\LaravelUser\Controllers
+ * @package Minhbang\User\Controllers
  */
 class PasswordController extends Controller
 {
@@ -98,7 +98,7 @@ class PasswordController extends Controller
         $response = Password::reset(
             $credentials,
             function (
-                /** @var \Minhbang\LaravelUser\User $user */
+                /** @var \Minhbang\User\User $user */
                 $user,
                 $password
             ) {

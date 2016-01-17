@@ -1,12 +1,12 @@
 <?php
-namespace Minhbang\LaravelUser;
+namespace Minhbang\User;
 
 use Minhbang\LaravelKit\Traits\Presenter\NestablePresenter;
 
 /**
  * Class GroupManager
  *
- * @package Minhbang\LaravelUser
+ * @package Minhbang\User
  */
 class GroupManager
 {
@@ -14,11 +14,11 @@ class GroupManager
     /**
      * Current type root
      *
-     * @var \Minhbang\LaravelUser\Group
+     * @var \Minhbang\User\Group
      */
     protected $_type_root;
     /**
-     * @var \Illuminate\Database\Eloquent\Collection|\Minhbang\LaravelUser\Group[]
+     * @var \Illuminate\Database\Eloquent\Collection|\Minhbang\User\Group[]
      */
     protected $_roots;
     /**
@@ -65,7 +65,7 @@ class GroupManager
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Collection|\Minhbang\LaravelUser\Group[]
+     * @return \Illuminate\Database\Eloquent\Collection|\Minhbang\User\Group[]
      */
     public function roots()
     {
@@ -105,7 +105,7 @@ class GroupManager
     }
 
     /**
-     * @return \Minhbang\LaravelUser\Group|static
+     * @return \Minhbang\User\Group|static
      */
     public function typeRoot()
     {

@@ -33,7 +33,7 @@ $ composer update
 
 * **Thêm vào file config/app.php => 'providers'**
 ```php
-	Minhbang\LaravelUser\UserServiceProvider::class,
+	Minhbang\User\UserServiceProvider::class,
 ```
 
 * **Publish config và database migrations**
@@ -47,13 +47,13 @@ $ php artisan migrate
 //Thay
 'model' => App\User::class,
 //Bằng
-'model' => Minhbang\LaravelUser\User::class,
+'model' => Minhbang\User\User::class,
 ```
 
 * **Thêm vào file app/Http/Kernel.php => $routeMiddleware** (đứng đầu)
 ```php
 protected $routeMiddleware = [
-	'admin' => \Minhbang\LaravelUser\Middleware\Admin::class,
+	'admin' => \Minhbang\User\Middleware\Admin::class,
 	//...
 ];
 ```
@@ -64,7 +64,7 @@ protected $routeMiddleware = [
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
-use Minhbang\LaravelUser\User;
+use Minhbang\User\User;
 
 class UserTableSeeder extends Seeder
 {

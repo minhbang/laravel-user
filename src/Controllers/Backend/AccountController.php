@@ -1,16 +1,16 @@
 <?php
-namespace Minhbang\LaravelUser\Controllers\Backend;
+namespace Minhbang\User\Controllers\Backend;
 
 use Minhbang\LaravelKit\Extensions\BackendController;
-use  Minhbang\LaravelUser\Requests\UpdatePasswordRequest;
-use  Minhbang\LaravelUser\Requests\UpdateProfileRequest;
+use  Minhbang\User\Requests\UpdatePasswordRequest;
+use  Minhbang\User\Requests\UpdateProfileRequest;
 use Illuminate\Contracts\Auth\Guard;
 use Session;
 
 /**
  * Class AccountController
  *
- * @package Minhbang\LaravelUser\Controllers\Backend
+ * @package Minhbang\User\Controllers\Backend
  */
 class AccountController extends BackendController
 {
@@ -37,7 +37,7 @@ class AccountController extends BackendController
     }
 
     /**
-     * @param \Minhbang\LaravelUser\Requests\UpdatePasswordRequest $request
+     * @param \Minhbang\User\Requests\UpdatePasswordRequest $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function postPassword(UpdatePasswordRequest $request)
@@ -71,7 +71,7 @@ class AccountController extends BackendController
     }
 
     /**
-     * @param \Minhbang\LaravelUser\Requests\UpdateProfileRequest $request
+     * @param \Minhbang\User\Requests\UpdateProfileRequest $request
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
     public function postProfile(UpdateProfileRequest $request)

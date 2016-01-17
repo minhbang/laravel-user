@@ -1,5 +1,5 @@
 <?php
-namespace Minhbang\LaravelUser\Support;
+namespace Minhbang\User\Support;
 
 /**
  * Class UserQuery

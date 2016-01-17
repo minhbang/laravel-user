@@ -1,12 +1,12 @@
 <?php
-namespace Minhbang\LaravelUser\Requests;
+namespace Minhbang\User\Requests;
 
 use Minhbang\LaravelKit\Extensions\Request;
 
 /**
  * Class GroupRequest
  *
- * @package Minhbang\LaravelUser
+ * @package Minhbang\User
  */
 class GroupRequest extends Request
 {
@@ -35,7 +35,7 @@ class GroupRequest extends Request
      */
     public function rules()
     {
-        /** @var \Minhbang\LaravelUser\Group $group */
+        /** @var \Minhbang\User\Group $group */
         if ($group = $this->route('user_group')) {
             //update Group
             $this->rules['system_name'] .= ',system_name,' . $group->id;

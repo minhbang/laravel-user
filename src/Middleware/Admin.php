@@ -1,5 +1,5 @@
 <?php
-namespace Minhbang\LaravelUser\Middleware;
+namespace Minhbang\User\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Guard;

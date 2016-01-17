@@ -1,11 +1,11 @@
 <?php
-namespace Minhbang\LaravelUser;
+namespace Minhbang\User;
 /**
- * Class UserManager
+ * Class Manager
  *
- * @package Minhbang\LaravelUser
+ * @package Minhbang\User
  */
-class UserManager
+class Manager
 {
     /**
      * @var array
@@ -23,14 +23,14 @@ class UserManager
     /**
      * Danh sách User models theo ID
      *
-     * @var \Minhbang\LaravelUser\User[]
+     * @var \Minhbang\User\User[]
      */
     protected $users = [];
 
     /**
      * User model hiện tại
      *
-     * @var \Minhbang\LaravelUser\User
+     * @var \Minhbang\User\User
      */
     protected $user = false;
 
@@ -54,7 +54,7 @@ class UserManager
      *
      * @param string|null $type
      *
-     * @return \Minhbang\LaravelUser\GroupManager
+     * @return \Minhbang\User\GroupManager
      */
     public function groups($type = null)
     {
@@ -122,7 +122,7 @@ class UserManager
      * @param string|null $attribute
      * @param int|null $id
      *
-     * @return \Minhbang\LaravelUser\User|mixed
+     * @return \Minhbang\User\User|mixed
      */
     public function user($attribute = null, $id = null)
     {

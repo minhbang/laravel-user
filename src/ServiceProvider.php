@@ -1,17 +1,17 @@
 <?php
 
-namespace Minhbang\LaravelUser;
+namespace Minhbang\User;
 
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 
 /**
- * Class UserServiceProvider
+ * Class ServiceProvider
  *
- * @package Minhbang\LaravelUser
+ * @package Minhbang\User
  */
-class UserServiceProvider extends ServiceProvider
+class ServiceProvider extends BaseServiceProvider
 {
     /**
      * Perform post-registration booting of services.
@@ -48,8 +48,8 @@ class UserServiceProvider extends ServiceProvider
         $router->pattern('user', '[0-9]+');
         $router->pattern('user_group', '[0-9]+');
         // model bindings
-        $router->model('user', 'Minhbang\LaravelUser\User');
-        $router->model('user_group', 'Minhbang\LaravelUser\Group');
+        $router->model('user', 'Minhbang\User\User');
+        $router->model('user_group', 'Minhbang\User\Group');
 
         // Validator rule kiểm tra password hiện tại
         $this->app['validator']->extend(
@@ -72,7 +72,7 @@ class UserServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/user.php', 'user');
         $this->app['user-manager'] = $this->app->share(
             function () {
-                return new UserManager(
+                return new Manager(
                     config('user.group_types'),
                     config('user.group_max_depth')
                 );
@@ -81,7 +81,7 @@ class UserServiceProvider extends ServiceProvider
         // add AccessControl alias
         $this->app->booting(
             function () {
-                AliasLoader::getInstance()->alias('UserManager', UserManagerFacade::class);
+                AliasLoader::getInstance()->alias('UserManager', ManagerFacade::class);
             }
         );
     }

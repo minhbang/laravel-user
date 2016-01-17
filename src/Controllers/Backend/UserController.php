@@ -1,18 +1,18 @@
 <?php
-namespace Minhbang\LaravelUser\Controllers\Backend;
+namespace Minhbang\User\Controllers\Backend;
 
 use Minhbang\LaravelKit\Extensions\BackendController;
 use Minhbang\LaravelKit\Traits\Controller\QuickUpdateActions;
-use Minhbang\LaravelUser\User;
+use Minhbang\User\User;
 use Request;
 use Datatable;
 use Html;
-use Minhbang\LaravelUser\Requests\UserRequest;
+use Minhbang\User\Requests\UserRequest;
 
 /**
  * Class UserController
  *
- * @package Minhbang\LaravelUser\Controllers\Backend
+ * @package Minhbang\User\Controllers\Backend
  */
 class UserController extends BackendController
 {
@@ -21,7 +21,7 @@ class UserController extends BackendController
     /**
      * Quản lý user group
      *
-     * @var \Minhbang\LaravelUser\GroupManager
+     * @var \Minhbang\User\GroupManager
      */
     protected $manager;
     /**
@@ -220,7 +220,7 @@ class UserController extends BackendController
     }
 
     /**
-     * @param \Minhbang\LaravelUser\Requests\UserRequest $request
+     * @param \Minhbang\User\Requests\UserRequest $request
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
@@ -243,7 +243,7 @@ class UserController extends BackendController
     }
 
     /**
-     * @param \Minhbang\LaravelUser\User $user
+     * @param \Minhbang\User\User $user
      *
      * @return \Illuminate\View\View
      */
@@ -253,7 +253,7 @@ class UserController extends BackendController
     }
 
     /**
-     * @param \Minhbang\LaravelUser\User $user
+     * @param \Minhbang\User\User $user
      *
      * @return \Illuminate\View\View
      * @throws \Laracasts\Presenter\Exceptions\PresenterException
@@ -275,8 +275,8 @@ class UserController extends BackendController
     }
 
     /**
-     * @param \Minhbang\LaravelUser\Requests\UserRequest $request
-     * @param \Minhbang\LaravelUser\User $user
+     * @param \Minhbang\User\Requests\UserRequest $request
+     * @param \Minhbang\User\User $user
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
@@ -298,7 +298,7 @@ class UserController extends BackendController
     }
 
     /**
-     * @param \Minhbang\LaravelUser\User $user
+     * @param \Minhbang\User\User $user
      *
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -330,7 +330,7 @@ class UserController extends BackendController
     /**
      * Kiểm tra không được update thông tin của chính mình
      *
-     * @param \Minhbang\LaravelUser\User $user
+     * @param \Minhbang\User\User $user
      * @param bool $ajax
      */
     protected function checkUser($user, $ajax = false)
@@ -370,7 +370,7 @@ class UserController extends BackendController
      * Không cho quick update với admin
      * và new username của user khác không được = 'admin'
      *
-     * @param \Minhbang\LaravelUser\User $user
+     * @param \Minhbang\User\User $user
      * @param string $attribute
      * @param string $value
      *

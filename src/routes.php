@@ -1,6 +1,6 @@
 <?php
 Route::group(
-    ['namespace' => 'Minhbang\LaravelUser\Controllers'],
+    ['namespace' => 'Minhbang\User\Controllers'],
     function () {
         Route::controller(
             'auth',
@@ -23,7 +23,7 @@ Route::group(
 );
 // Backend ===================================================================================
 Route::group(
-    ['prefix' => 'backend', 'namespace' => 'Minhbang\LaravelUser\Controllers\Backend'],
+    ['prefix' => 'backend', 'namespace' => 'Minhbang\User\Controllers\Backend'],
     function () {
         Route::controller(
             'account',

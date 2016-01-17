@@ -7,7 +7,7 @@ if (!function_exists('user')) {
      * @param int|string|null $attribute
      * @param int|null $id
      *
-     * @return \Minhbang\LaravelUser\User|mixed
+     * @return \Minhbang\User\User|mixed
      */
     function user($attribute = null, $id = null)
     {

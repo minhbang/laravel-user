@@ -1,22 +1,22 @@
 <?php
-namespace Minhbang\LaravelUser\Controllers\Backend;
+namespace Minhbang\User\Controllers\Backend;
 
 use Request;
-use Minhbang\LaravelUser\Group;
-use Minhbang\LaravelUser\Requests\GroupRequest;
+use Minhbang\User\Group;
+use Minhbang\User\Requests\GroupRequest;
 use Minhbang\LaravelKit\Extensions\BackendController;
 
 /**
  * Class GroupController
  *
- * @package Minhbang\LaravelUser\Controllers\Backend
+ * @package Minhbang\User\Controllers\Backend
  */
 class GroupController extends BackendController
 {
     /**
      * Quản lý user group
      *
-     * @var \Minhbang\LaravelUser\GroupManager
+     * @var \Minhbang\User\GroupManager
      */
     protected $manager;
     /**
@@ -75,7 +75,7 @@ class GroupController extends BackendController
     /**
      * Show the form for creating a new resource.
      *
-     * @param \Minhbang\LaravelUser\Group $group
+     * @param \Minhbang\User\Group $group
      *
      * @return \Illuminate\View\View
      */
@@ -85,7 +85,7 @@ class GroupController extends BackendController
     }
 
     /**
-     * @param null|\Minhbang\LaravelUser\Group $parent
+     * @param null|\Minhbang\User\Group $parent
      *
      * @return \Illuminate\View\View
      */
@@ -107,7 +107,7 @@ class GroupController extends BackendController
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Minhbang\LaravelUser\Requests\GroupRequest $request
+     * @param \Minhbang\User\Requests\GroupRequest $request
      *
      * @return \Illuminate\View\View
      */
@@ -119,8 +119,8 @@ class GroupController extends BackendController
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Minhbang\LaravelUser\Requests\GroupRequest $request
-     * @param \Minhbang\LaravelUser\Group $group
+     * @param \Minhbang\User\Requests\GroupRequest $request
+     * @param \Minhbang\User\Group $group
      *
      * @return \Illuminate\View\View
      */
@@ -132,8 +132,8 @@ class GroupController extends BackendController
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Minhbang\LaravelUser\Requests\GroupRequest $request
-     * @param null|\Minhbang\LaravelUser\Group $parent
+     * @param \Minhbang\User\Requests\GroupRequest $request
+     * @param null|\Minhbang\User\Group $parent
      *
      * @return \Illuminate\View\View
      */
@@ -158,7 +158,7 @@ class GroupController extends BackendController
     /**
      * Display the specified resource.
      *
-     * @param \Minhbang\LaravelUser\Group $group
+     * @param \Minhbang\User\Group $group
      *
      * @return \Illuminate\View\View
      */
@@ -170,7 +170,7 @@ class GroupController extends BackendController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param \Minhbang\LaravelUser\Group $group
+     * @param \Minhbang\User\Group $group
      *
      * @return \Illuminate\View\View
      */
@@ -186,8 +186,8 @@ class GroupController extends BackendController
     /**
      * Update the specified resource in storage.
      *
-     * @param \Minhbang\LaravelUser\Requests\GroupRequest $request
-     * @param \Minhbang\LaravelUser\Group $group
+     * @param \Minhbang\User\Requests\GroupRequest $request
+     * @param \Minhbang\User\Group $group
      *
      * @return \Illuminate\View\View
      */
@@ -210,7 +210,7 @@ class GroupController extends BackendController
     /**
      * Remove the specified resource from storage.
      *
-     * @param \Minhbang\LaravelUser\Group $group
+     * @param \Minhbang\User\Group $group
      *
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Exception
@@ -268,7 +268,7 @@ class GroupController extends BackendController
     /**
      * @param string $name
      *
-     * @return null|\Minhbang\LaravelUser\Group
+     * @return null|\Minhbang\User\Group
      */
     protected function getNode($name)
     {

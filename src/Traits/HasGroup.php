@@ -1,18 +1,18 @@
 <?php
-namespace Minhbang\LaravelUser\Traits;
+namespace Minhbang\User\Traits;
 /**
  * Class HasGroup
  * Cho User model có UserGroup
  *
- * @package Minhbang\LaravelUser\Traits
+ * @package Minhbang\User\Traits
  * @property string $table
  * @property bool $exists
  * @property-read mixed $type
  * @property-read mixed $type_name
- * @property-read \Minhbang\LaravelUser\Group $group
+ * @property-read \Minhbang\User\Group $group
  * @method \Illuminate\Database\Eloquent\Relations\BelongsTo belongsTo($related, $foreignKey = null, $otherKey = null, $relation = null)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User inGroup($group = null)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User withGroup()
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User inGroup($group = null)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User withGroup()
  * @method bool isOne($role)
  */
 trait HasGroup
@@ -27,7 +27,7 @@ trait HasGroup
      */
     public function group()
     {
-        return $this->belongsTo('Minhbang\LaravelUser\Group');
+        return $this->belongsTo('Minhbang\User\Group');
     }
 
     /**
@@ -53,10 +53,10 @@ trait HasGroup
     /**
      * Tất cả user thuộc $group và con cháu của $group
      *
-     * @param \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User $query
-     * @param \Minhbang\LaravelUser\Group $group
+     * @param \Illuminate\Database\Query\Builder|\Minhbang\User\User $query
+     * @param \Minhbang\User\Group $group
      *
-     * @return \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User
+     * @return \Illuminate\Database\Query\Builder|\Minhbang\User\User
      */
     public function scopeInGroup($query, $group = null)
     {
@@ -70,9 +70,9 @@ trait HasGroup
 
     /**
      *
-     * @param \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User $query
+     * @param \Illuminate\Database\Query\Builder|\Minhbang\User\User $query
      *
-     * @return \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User
+     * @return \Illuminate\Database\Query\Builder|\Minhbang\User\User
      */
     public function scopeWithGroup($query)
     {

@@ -1,5 +1,5 @@
 <?php
-namespace Minhbang\LaravelUser\Controllers;
+namespace Minhbang\User\Controllers;
 
 use Minhbang\LaravelKit\Extensions\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 /**
  * Class AuthController
  *
- * @package Minhbang\LaravelUser\Controllers
+ * @package Minhbang\User\Controllers
  */
 class AuthController extends Controller
 {

@@ -1,9 +1,9 @@
 <?php
-namespace Minhbang\LaravelUser;
+namespace Minhbang\User;
 
 use Illuminate\Support\Facades\Facade;
 
-class UserManagerFacade extends Facade
+class ManagerFacade extends Facade
 {
     /**
      * Get the registered name of the component.

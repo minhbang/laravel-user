@@ -1,11 +1,11 @@
 <?php
-namespace Minhbang\LaravelUser;
+namespace Minhbang\User;
 
 use Laracasts\Presenter\PresentableTrait;
 use Minhbang\LaravelKit\Extensions\NestedSetModel;
 
 /**
- * Minhbang\LaravelUser\Group
+ * Minhbang\User\Group
  *
  * @property integer $id
  * @property integer $parent_id
@@ -18,24 +18,24 @@ use Minhbang\LaravelKit\Extensions\NestedSetModel;
  * @property string $acronym_name
  * @property-read string $type
  * @property-read string $type_name
- * @property-read \Minhbang\LaravelUser\Group $parent
+ * @property-read \Minhbang\User\Group $parent
  * @property-read \Illuminate\Database\Eloquent\Collection|\Minhbang\Category\Item[] $categories
- * @property-read \Illuminate\Database\Eloquent\Collection|\Minhbang\LaravelUser\User[] $users
- * @property-read \Illuminate\Database\Eloquent\Collection|\Minhbang\LaravelUser\Group[] $children
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\Group whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\Group whereParentId($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\Group whereLft($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\Group whereRgt($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\Group whereDepth($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\Group whereSystemName($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\Group whereFullName($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\Group whereShortName($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\Group whereAcronymName($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\Group whereType($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\Group wherePriority($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\Group whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\Group whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\Group systemName($system_name)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Minhbang\User\User[] $users
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Minhbang\User\Group[] $children
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereParentId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereLft($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereRgt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereDepth($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereSystemName($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereFullName($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereShortName($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereAcronymName($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereType($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group wherePriority($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group systemName($system_name)
  * @method static \Illuminate\Database\Query\Builder|\Baum\Node withoutNode($node)
  * @method static \Illuminate\Database\Query\Builder|\Baum\Node withoutSelf()
  * @method static \Illuminate\Database\Query\Builder|\Baum\Node withoutRoot()
@@ -45,7 +45,7 @@ class Group extends NestedSetModel
 {
     use PresentableTrait;
     protected $table = 'user_groups';
-    protected $presenter = 'Minhbang\LaravelUser\GroupPresenter';
+    protected $presenter = 'Minhbang\User\GroupPresenter';
     protected $fillable = ['system_name', 'full_name', 'short_name', 'acronym_name'];
     public $timestamps = false;
 

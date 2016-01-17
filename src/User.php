@@ -1,5 +1,5 @@
 <?php
-namespace Minhbang\LaravelUser;
+namespace Minhbang\User;
 
 use Minhbang\AccessControl\Traits\User\HasRole;
 use Minhbang\LaravelKit\Extensions\Model;
@@ -10,12 +10,12 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Laracasts\Presenter\PresentableTrait;
-use Minhbang\LaravelUser\Traits\HasGroup;
+use Minhbang\User\Traits\HasGroup;
 
 /**
  * Class User
  *
- * @package Minhbang\LaravelUser
+ * @package Minhbang\User
  * @property integer $id
  * @property string $name
  * @property string $username
@@ -27,30 +27,30 @@ use Minhbang\LaravelUser\Traits\HasGroup;
  * @property \Carbon\Carbon $updated_at
  * @property-read mixed $code
  * @property-read \Illuminate\Database\Eloquent\Collection|\Minhbang\AccessControl\Models\Role[] $roles
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereUsername($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereEmail($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User wherePassword($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereGroupId($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereRememberToken($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User forSelectize($ignore = null, $take = 10)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User adminFirst()
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User whereUsername($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User whereEmail($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User wherePassword($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User whereGroupId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User whereRememberToken($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User forSelectize($ignore = null, $take = 10)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User adminFirst()
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelKit\Extensions\Model except($id = null)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelKit\Extensions\Model findText($column, $text)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User orderCreated($direction = 'desc')
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User orderUpdated($direction = 'desc')
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User period($start = null, $end = null, $field = 'created_at', $end_if_day = false, $is_month = false)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User today($field = 'created_at')
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User yesterday($same_time = false, $field = 'created_at')
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User thisWeek($field = 'created_at')
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User thisMonth($field = 'created_at')
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User searchWhere($column, $operator = '=', $fn = null)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User searchWhereIn($column, $fn)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User searchWhereBetween($column, $fn = null)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User searchWhereInDependent($column, $column_dependent, $fn, $empty = [])
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User orderCreated($direction = 'desc')
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User orderUpdated($direction = 'desc')
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User period($start = null, $end = null, $field = 'created_at', $end_if_day = false, $is_month = false)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User today($field = 'created_at')
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User yesterday($same_time = false, $field = 'created_at')
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User thisWeek($field = 'created_at')
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User thisMonth($field = 'created_at')
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User searchWhere($column, $operator = '=', $fn = null)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User searchWhereIn($column, $fn)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User searchWhereBetween($column, $fn = null)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User searchWhereInDependent($column, $column_dependent, $fn, $empty = [])
  */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
@@ -61,7 +61,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     use HasRole;
     use HasGroup;
 
-    protected $presenter = UserPresenter::class;
+    protected $presenter = Presenter::class;
     protected $table = 'users';
     protected $fillable = ['name', 'username', 'email', 'password', 'group_id'];
     protected $hidden = ['password', 'remember_token'];
@@ -69,11 +69,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * Lấy $take user phục vụ selectize user
      *
-     * @param \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User $query
+     * @param \Illuminate\Database\Query\Builder|\Minhbang\User\User $query
      * @param mixed|null $ignore
      * @param int $take
      *
-     * @return \Illuminate\Database\Query\Builder|\Minhbang\LaravelUser\User
+     * @return \Illuminate\Database\Query\Builder|\Minhbang\User\User
      */
     public function scopeForSelectize($query, $ignore = null, $take = 50)
     {
