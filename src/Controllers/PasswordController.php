@@ -1,7 +1,7 @@
 <?php
 namespace Minhbang\User\Controllers;
 
-use Minhbang\LaravelKit\Extensions\Controller;
+use Minhbang\Kit\Extensions\Controller;
 use Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;

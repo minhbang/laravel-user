@@ -1,7 +1,7 @@
 <?php
 namespace Minhbang\User;
 
-use Minhbang\LaravelKit\Traits\Presenter\DatetimePresenter;
+use Minhbang\Kit\Traits\Presenter\DatetimePresenter;
 use Laracasts\Presenter\Presenter as BasePresenter;
 
 /**

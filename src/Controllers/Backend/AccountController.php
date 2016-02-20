@@ -1,7 +1,7 @@
 <?php
 namespace Minhbang\User\Controllers\Backend;
 
-use Minhbang\LaravelKit\Extensions\BackendController;
+use Minhbang\Kit\Extensions\BackendController;
 use  Minhbang\User\Requests\UpdatePasswordRequest;
 use  Minhbang\User\Requests\UpdateProfileRequest;
 use Illuminate\Contracts\Auth\Guard;

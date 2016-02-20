@@ -4,7 +4,7 @@ namespace Minhbang\User\Controllers\Backend;
 use Request;
 use Minhbang\User\Group;
 use Minhbang\User\Requests\GroupRequest;
-use Minhbang\LaravelKit\Extensions\BackendController;
+use Minhbang\Kit\Extensions\BackendController;
 
 /**
  * Class GroupController

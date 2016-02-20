@@ -4,7 +4,7 @@ namespace Minhbang\User\Support;
 /**
  * Class UserQuery
  *
- * @package Minhbang\LaravelKit\Traits\Model
+ * @package Minhbang\Kit\Traits\Model
  * @property-read string $table
  * @method \Illuminate\Database\Eloquent\Relations\BelongsTo belongsTo($related, $foreignKey = null, $otherKey = null, $relation = null)
  */

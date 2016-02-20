@@ -2,9 +2,9 @@
 namespace Minhbang\User;
 
 use Minhbang\AccessControl\Traits\User\HasRole;
-use Minhbang\LaravelKit\Extensions\Model;
-use Minhbang\LaravelKit\Traits\Model\DatetimeQuery;
-use Minhbang\LaravelKit\Traits\Model\SearchQuery;
+use Minhbang\Kit\Extensions\Model;
+use Minhbang\Kit\Traits\Model\DatetimeQuery;
+use Minhbang\Kit\Traits\Model\SearchQuery;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -38,8 +38,8 @@ use Minhbang\User\Traits\HasGroup;
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User forSelectize($ignore = null, $take = 10)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User adminFirst()
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelKit\Extensions\Model except($id = null)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\LaravelKit\Extensions\Model findText($column, $text)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\Kit\Extensions\Model except($id = null)
+ * @method static \Illuminate\Database\Query\Builder|\Minhbang\Kit\Extensions\Model findText($column, $text)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User orderCreated($direction = 'desc')
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User orderUpdated($direction = 'desc')
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User period($start = null, $end = null, $field = 'created_at', $end_if_day = false, $is_month = false)

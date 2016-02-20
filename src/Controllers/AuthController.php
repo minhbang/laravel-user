@@ -1,7 +1,7 @@
 <?php
 namespace Minhbang\User\Controllers;
 
-use Minhbang\LaravelKit\Extensions\Controller;
+use Minhbang\Kit\Extensions\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Auth;
 use Cache;

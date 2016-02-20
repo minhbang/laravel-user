@@ -2,7 +2,7 @@
 namespace Minhbang\User;
 
 use Laracasts\Presenter\PresentableTrait;
-use Minhbang\LaravelKit\Extensions\NestedSetModel;
+use Minhbang\Kit\Extensions\NestedSetModel;
 
 /**
  * Minhbang\User\Group
@@ -54,7 +54,7 @@ class Group extends NestedSetModel
      *
      * @param bool $immediate
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany|\Minhbang\LaravelKit\Extensions\HasManyNestedSet
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany|\Minhbang\Kit\Extensions\HasManyNestedSet
      */
     public function users($immediate = false)
     {

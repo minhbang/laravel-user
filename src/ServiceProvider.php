@@ -26,19 +26,21 @@ class ServiceProvider extends BaseServiceProvider
         $this->loadViewsFrom(__DIR__ . '/../views', 'user');
         $this->publishes(
             [
-                __DIR__ . '/../views'                                => base_path('resources/views/vendor/user'),
-                __DIR__ . '/../lang'                                 => base_path('resources/lang/vendor/user'),
-                __DIR__ . '/../config/user.php'                      => config_path('user.php'),
-                __DIR__ . '/../database/migrations/' .
-                '2014_10_11_000000_create_user_groups_table.php'     =>
-                    database_path('migrations/2014_10_11_000000_create_user_groups_table.php'),
-                __DIR__ . '/../database/migrations/' .
-                '2014_10_12_000000_create_users_table.php'           =>
-                    database_path('migrations/2014_10_12_000000_create_users_table.php'),
-                __DIR__ . '/../database/migrations/' .
-                '2014_10_12_100000_create_password_resets_table.php' =>
-                    database_path('migrations/2014_10_12_100000_create_password_resets_table.php'),
+                __DIR__ . '/../views'           => base_path('resources/views/vendor/user'),
+                __DIR__ . '/../lang'            => base_path('resources/lang/vendor/user'),
+                __DIR__ . '/../config/user.php' => config_path('user.php'),
             ]
+        );
+        $this->publishes(
+            [
+                __DIR__ . '/../database/migrations/2014_10_11_000000_create_user_groups_table.php'     =>
+                    database_path('migrations/2014_10_11_000000_create_user_groups_table.php'),
+                __DIR__ . '/../database/migrations/2014_10_12_000000_create_users_table.php'           =>
+                    database_path('migrations/2014_10_12_000000_create_users_table.php'),
+                __DIR__ . '/../database/migrations/2014_10_12_100000_create_password_resets_table.php' =>
+                    database_path('migrations/2014_10_12_100000_create_password_resets_table.php'),
+            ],
+            'db'
         );
 
         if (config('user.add_route') && !$this->app->routesAreCached()) {

@@ -1,8 +1,8 @@
 <?php
 namespace Minhbang\User\Controllers\Backend;
 
-use Minhbang\LaravelKit\Extensions\BackendController;
-use Minhbang\LaravelKit\Traits\Controller\QuickUpdateActions;
+use Minhbang\Kit\Extensions\BackendController;
+use Minhbang\Kit\Traits\Controller\QuickUpdateActions;
 use Minhbang\User\User;
 use Request;
 use Datatable;

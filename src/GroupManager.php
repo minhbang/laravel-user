@@ -1,7 +1,7 @@
 <?php
 namespace Minhbang\User;
 
-use Minhbang\LaravelKit\Traits\Presenter\NestablePresenter;
+use Minhbang\Kit\Traits\Presenter\NestablePresenter;
 
 /**
  * Class GroupManager
