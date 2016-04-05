@@ -4,7 +4,7 @@ namespace Minhbang\User;
 
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\AliasLoader;
-use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use Minhbang\Kit\Extensions\BaseServiceProvider;
 
 /**
  * Class ServiceProvider
@@ -39,13 +39,14 @@ class ServiceProvider extends BaseServiceProvider
                     database_path('migrations/2014_10_12_000000_create_users_table.php'),
                 __DIR__ . '/../database/migrations/2014_10_12_100000_create_password_resets_table.php' =>
                     database_path('migrations/2014_10_12_100000_create_password_resets_table.php'),
+                __DIR__ . '/../database/migrations/2014_11_05_100000_create_role_user_table.php'       =>
+                    database_path('migrations/2014_11_05_100000_create_role_user_table.php'),
             ],
             'db'
         );
 
-        if (config('user.add_route') && !$this->app->routesAreCached()) {
-            require __DIR__ . '/routes.php';
-        }
+        $this->mapWebRoutes($router, __DIR__ . '/routes.php', config('user.add_route'));
+
         // pattern filters
         $router->pattern('user', '[0-9]+');
         $router->pattern('user_group', '[0-9]+');
@@ -80,10 +81,18 @@ class ServiceProvider extends BaseServiceProvider
                 );
             }
         );
+        $this->app['role-manager'] = $this->app->share(
+            function () {
+                return new RoleManager(
+                    config('user.roles')
+                );
+            }
+        );
         // add AccessControl alias
         $this->app->booting(
             function () {
                 AliasLoader::getInstance()->alias('UserManager', ManagerFacade::class);
+                AliasLoader::getInstance()->alias('RoleManager', RoleManagerFacade::class);
             }
         );
     }
@@ -95,6 +104,6 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function provides()
     {
-        return ['user-manager'];
+        return ['user-manager', 'role-manager'];
     }
 }
