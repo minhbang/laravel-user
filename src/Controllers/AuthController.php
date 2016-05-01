@@ -27,7 +27,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getLogin()
+    public function showLogin()
     {
         return view('user::login');
     }
@@ -36,7 +36,7 @@ class AuthController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return $this|\Illuminate\Http\RedirectResponse
      */
-    public function postLogin(Request $request)
+    public function login(Request $request)
     {
         $this->validate($request, ['username' => 'required', 'password' => 'required']);
         if ($this->hasTooManyLoginAttempts($request)) {
@@ -65,7 +65,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function getLogout()
+    public function logout()
     {
         Auth::logout();
 

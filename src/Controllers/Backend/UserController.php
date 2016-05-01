@@ -4,6 +4,7 @@ namespace Minhbang\User\Controllers\Backend;
 use Minhbang\Kit\Extensions\BackendController;
 use Minhbang\Kit\Traits\Controller\QuickUpdateActions;
 use Minhbang\User\User;
+use UserManager;
 use Request;
 use Datatable;
 use Html;
@@ -43,7 +44,7 @@ class UserController extends BackendController
         $key = 'backend.user.group_type';
         $type = $type ?: session($key, 'normal');
         session([$key => $type]);
-        $this->manager = app('user-manager')->groups($type);
+        $this->manager = UserManager::groups($type);
         $this->type = $type;
     }
 
@@ -71,7 +72,7 @@ class UserController extends BackendController
                 trans('user::user.username'),
                 trans('user::user.name'),
                 trans('user::user.email'),
-                trans('access-control::role.role'),
+                trans('user::role.roles'),
                 trans('common.actions')
             )
             ->setOptions($options)
@@ -93,6 +94,7 @@ class UserController extends BackendController
             ['#' => trans('user::user.user')],
             $buttons
         );
+
         return view('user::index', compact('tableOptions', 'options', 'table', 'typeName'));
     }
 
@@ -110,6 +112,7 @@ class UserController extends BackendController
                 ->searchWhereBetween('users.created_at', 'mb_date_vn2mysql')
                 ->searchWhereBetween('users.updated_at', 'mb_date_vn2mysql');
         }
+
         return Datatable::query($query)
             ->addColumn(
                 'index',
@@ -120,7 +123,7 @@ class UserController extends BackendController
             ->addColumn(
                 'username',
                 function (User $model) {
-                    if ($model->isSuperadmin()) {
+                    if ($model->isSysSadmin()) {
                         return "<span class=\"text-danger\">{$model->username}</span>";
                     } else {
                         return Html::linkQuickUpdate(
@@ -138,7 +141,7 @@ class UserController extends BackendController
             ->addColumn(
                 'name',
                 function (User $model) {
-                    if ($model->isSuperadmin()) {
+                    if ($model->isSysSadmin()) {
                         return "<span class=\"text-danger\">{$model->name}</span>";
                     } else {
                         return Html::linkQuickUpdate(
@@ -156,7 +159,7 @@ class UserController extends BackendController
             ->addColumn(
                 'email',
                 function (User $model) {
-                    if ($model->isSuperadmin()) {
+                    if ($model->isSysSadmin()) {
                         return "<span class=\"text-danger\">{$model->email}</span>";
                     } else {
                         return Html::linkQuickUpdate(
@@ -216,6 +219,7 @@ class UserController extends BackendController
                 '#'                         => trans('common.create'),
             ]
         );
+
         return view('user::form', compact('user', 'url', 'method', 'groups'));
     }
 
@@ -229,6 +233,7 @@ class UserController extends BackendController
         $user = new User();
         $user->fill($request->all());
         $user->save();
+
         return view(
             '_modal_script',
             [
@@ -263,6 +268,7 @@ class UserController extends BackendController
         $this->checkUser($user);
         $url = route('backend.user.update', ['user' => $user->id]);
         $method = 'put';
+        $groups = $this->manager->selectize();
         $this->buildHeading(
             trans('common.update_object', ['name' => trans('user::user.user')]),
             'edit',
@@ -271,7 +277,8 @@ class UserController extends BackendController
                 '#'                         => trans('common.edit'),
             ]
         );
-        return view('user::form', compact('user', 'url', 'method'));
+
+        return view('user::form', compact('user', 'url', 'method', 'groups'));
     }
 
     /**
@@ -285,6 +292,7 @@ class UserController extends BackendController
         $this->checkUser($user);
         $user->fill($request->all());
         $user->save();
+
         return view(
             '_modal_script',
             [
@@ -306,6 +314,7 @@ class UserController extends BackendController
     {
         $this->checkUser($user, true);
         $user->delete();
+
         return response()->json(
             [
                 'type'    => 'success',

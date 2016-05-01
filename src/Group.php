@@ -3,7 +3,7 @@ namespace Minhbang\User;
 
 use Laracasts\Presenter\PresentableTrait;
 use Minhbang\Kit\Extensions\NestedSetModel;
-
+use UserManager;
 /**
  * Minhbang\User\Group
  *
@@ -19,7 +19,7 @@ use Minhbang\Kit\Extensions\NestedSetModel;
  * @property-read string $type
  * @property-read string $type_name
  * @property-read \Minhbang\User\Group $parent
- * @property-read \Illuminate\Database\Eloquent\Collection|\Minhbang\Category\Item[] $categories
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Minhbang\Category\Category[] $categories
  * @property-read \Illuminate\Database\Eloquent\Collection|\Minhbang\User\User[] $users
  * @property-read \Illuminate\Database\Eloquent\Collection|\Minhbang\User\Group[] $children
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereId($value)
@@ -75,7 +75,7 @@ class Group extends NestedSetModel
         /** @var \Illuminate\Database\Eloquent\Relations\HasMany|\Illuminate\Database\Query\Builder $query */
         $query = $this->hasMany('Minhbang\Category\Item', 'moderator_id');
         if (!$immediate) {
-            /** @var \Minhbang\Category\Item[] $categories */
+            /** @var \Minhbang\Category\Category[] $categories */
             $categories = $this->categories(true)->get();
             $ids = [];
             // Lấy IDs các categories con của các categories trực tiếp
@@ -103,7 +103,7 @@ class Group extends NestedSetModel
     public function getTypeNameAttribute()
     {
         $type = $this->getTypeAttribute();
-        return $type ? app('user-manager')->groupTypeNames($type, null) : null;
+        return $type ? UserManager::groupTypeNames($type, null) : null;
     }
 
     /**
@@ -131,14 +131,14 @@ class Group extends NestedSetModel
      * Là có quan quản lý của danh mục $category
      * - Được giao quản lý danh mục cha (root1, depth = 1) của $category
      *
-     * @param \Minhbang\Category\Item $category
+     * @param \Minhbang\Category\Category $category
      *
      * @return bool
      */
     public function isModeratorOf($category)
     {
         if ($this->exists) {
-            /** @var \Minhbang\Category\Item $category_root */
+            /** @var \Minhbang\Category\Category $category_root */
             $category_root = $category->getRoot1();
             return $category_root && $category_root->moderator_id == $this->id;
         } else {

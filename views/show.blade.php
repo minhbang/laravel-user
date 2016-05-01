@@ -22,7 +22,7 @@
         <td><strong>{{ $user->email }}</strong></td>
     </tr>
     <tr>
-        <td>{{ trans('access-control::role.role') }}</td>
+        <td>{{ trans('user::role.roles') }}</td>
         <td>{!! $user->present()->roles !!}</td>
     </tr>
     <tr>

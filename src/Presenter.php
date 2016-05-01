@@ -19,9 +19,12 @@ class Presenter extends BasePresenter
     public function roles()
     {
         $names = [];
-        foreach($this->entity->roles as $role){
-            $names[] = "<code>{$role->full_name}</code>";
+        foreach ($this->entity->roles() as $role) {
+            if ($role) {
+                $names[] = '<code>' . \RoleManager::roles("{$role}.title") . '</code>';
+            }
         }
+
         return implode('<br />', $names);
     }
 }

@@ -5,6 +5,7 @@ namespace Minhbang\User;
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\AliasLoader;
 use Minhbang\Kit\Extensions\BaseServiceProvider;
+use MenuManager;
 
 /**
  * Class ServiceProvider
@@ -63,6 +64,9 @@ class ServiceProvider extends BaseServiceProvider
                 return $user && $this->app['hash']->check($value, $user->password);
             }
         );
+
+        // Add user menus
+        MenuManager::addItems(config('user.menus'));
     }
 
     /**

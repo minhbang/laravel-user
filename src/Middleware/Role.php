@@ -4,7 +4,12 @@ namespace Minhbang\User\Middleware;
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
 
-class Admin
+/**
+ * Class Role
+ *
+ * @package Minhbang\User\Middleware
+ */
+class Role
 {
     /**
      * The Guard implementation.
@@ -24,23 +29,27 @@ class Admin
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  \Closure $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
+     * @param string $role
+     * @param string $all
+     * @param string $exact
+     *
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, $role, $all = null, $exact = null)
     {
-        if ($user = user()) {
-            if ($user->inAdminGroup()) {
+        if ($this->auth->check()) {
+            if (user()->is($role, $all === 'all', $exact === 'exact')) {
                 return $next($request);
             } else {
-                abort(403, trans('common.forbidden'));
+                return response(trans('common.forbidden'), 403);
             }
         } else {
             if ($request->ajax()) {
                 return response('Unauthorized.', 401);
             } else {
-                return redirect()->guest('auth/login');
+                return redirect()->guest(route('auth.login'));
             }
         }
     }

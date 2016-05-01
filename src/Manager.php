@@ -1,5 +1,6 @@
 <?php
 namespace Minhbang\User;
+
 /**
  * Class Manager
  *
@@ -28,11 +29,11 @@ class Manager
     protected $users = [];
 
     /**
-     * User model hiện tại
+     * New User model instance
      *
      * @var \Minhbang\User\User
      */
-    protected $user = false;
+    protected $new_user;
 
     /**
      * UserManager constructor.
@@ -47,7 +48,6 @@ class Manager
         }
         $this->group_max_depth = $group_max_depth;
     }
-
 
     /**
      * Lấy group manager của $type
@@ -65,6 +65,7 @@ class Manager
         if (!isset($this->group_managers[$type])) {
             $this->group_managers[$type] = new GroupManager($type, $this->group_max_depth);
         }
+
         return $this->group_managers[$type];
     }
 
@@ -79,6 +80,7 @@ class Manager
     public function selectizeGroups($attribute = 'full_name', $key = 'id')
     {
         $lists = $this->listGroups($attribute, $key);
+
         return array_map(
             function ($key, $value) {
                 return ['value' => $key, 'text' => $value];
@@ -100,6 +102,7 @@ class Manager
     {
         return $this->groups()->listRoots($attribute, $key);
     }
+
     /**
      * @param string $type
      * @param mixed $default
@@ -122,7 +125,7 @@ class Manager
      * @param string|null $attribute
      * @param int|null $id
      *
-     * @return \Minhbang\User\User|mixed
+     * @return \Minhbang\User\User
      */
     public function user($attribute = null, $id = null)
     {
@@ -136,12 +139,13 @@ class Manager
             $user = $this->users[$id];
         } else {
             // User hiện tại
-            if ($this->user === false) {
-                $this->user = auth()->user();
-                $this->user = $this->user ?: new $user_class();
+            if (!$this->new_user) {
+                $this->new_user = new $user_class();
             }
-            $user = $this->user;
+            $user = auth()->user();
+            $user = $user ?: $this->new_user;
         }
+
         return $attribute ? $user->$attribute : $user;
     }
 }

@@ -2,7 +2,7 @@
 namespace Minhbang\User;
 
 use Minhbang\Kit\Traits\Presenter\NestablePresenter;
-
+use UserManager;
 /**
  * Class GroupManager
  *
@@ -51,7 +51,7 @@ class GroupManager
      */
     public function nestable()
     {
-        return $this->toNestable($this->roots(), $this->max_depth);
+        return $this->toNestable($this->_type_root, $this->max_depth);
     }
 
     /**
@@ -85,7 +85,7 @@ class GroupManager
      */
     public function listRoots($attribute = 'full_name', $key = 'id')
     {
-        return $this->roots()->lists($attribute, $key)->all();
+        return $this->roots()->pluck($attribute, $key)->all();
     }
 
     /**
@@ -93,7 +93,7 @@ class GroupManager
      */
     public function typeNames()
     {
-        return app('user-manager')->groupTypeNames();
+        return UserManager::groupTypeNames();
     }
 
     /**
@@ -101,7 +101,7 @@ class GroupManager
      */
     public function typeName()
     {
-        return app('user-manager')->groupTypeNames($this->_type_root->system_name);
+        return UserManager::groupTypeNames($this->_type_root->system_name);
     }
 
     /**

@@ -20,7 +20,7 @@ class PasswordController extends Controller
      *
      * @return \Illuminate\View\View
      */
-    public function getEmail()
+    public function showEmail()
     {
         return view('user::password');
     }
@@ -31,7 +31,7 @@ class PasswordController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return $this|\Illuminate\Http\RedirectResponse
      */
-    public function postEmail(Request $request)
+    public function email(Request $request)
     {
         $this->validate($request, ['email' => 'required|email']);
 
@@ -62,7 +62,7 @@ class PasswordController extends Controller
      * @param null $token
      * @return $this
      */
-    public function getReset($token = null)
+    public function showReset($token = null)
     {
         if (is_null($token)) {
             throw new NotFoundHttpException;
@@ -77,7 +77,7 @@ class PasswordController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function postReset(Request $request)
+    public function reset(Request $request)
     {
         $this->validate(
             $request,

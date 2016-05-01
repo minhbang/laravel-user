@@ -1,7 +1,7 @@
 <?php
-namespace Minhbang\User\Controllers\Backend;
+namespace Minhbang\User\Controllers;
 
-use Minhbang\Kit\Extensions\BackendController;
+use Minhbang\Kit\Extensions\Controller;
 use  Minhbang\User\Requests\UpdatePasswordRequest;
 use  Minhbang\User\Requests\UpdateProfileRequest;
 use Illuminate\Contracts\Auth\Guard;
@@ -12,8 +12,13 @@ use Session;
  *
  * @package Minhbang\User\Controllers\Backend
  */
-class AccountController extends BackendController
+class AccountController extends Controller
 {
+    /**
+     * @var \Illuminate\Contracts\Auth\Guard
+     */
+    protected $auth;
+
     /**
      * @param \Illuminate\Contracts\Auth\Guard $auth
      */
@@ -26,21 +31,17 @@ class AccountController extends BackendController
     /**
      * @return \Illuminate\View\View
      */
-    public function getPassword()
+    public function showPassword()
     {
-        $this->buildHeading(
-            trans('user::account.update_password'),
-            'fa-user-secret',
-            [route('backend.user.index') => trans('user::user.user'), '#' => trans('user::account.update_password')]
-        );
         return view('user::update_password');
     }
 
     /**
      * @param \Minhbang\User\Requests\UpdatePasswordRequest $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function postPassword(UpdatePasswordRequest $request)
+    public function password(UpdatePasswordRequest $request)
     {
         $user = user();
         $user->password = $request->get('password');
@@ -53,28 +54,25 @@ class AccountController extends BackendController
                 'content' => trans('user::account.change_password_success'),
             ]
         );
+
         return redirect(route('auth.login'));
     }
 
     /**
      * @return \Illuminate\View\View
      */
-    public function getProfile()
+    public function showProfile()
     {
         $account = user();
-        $this->buildHeading(
-            trans('user::account.profile'),
-            'fa-list-alt',
-            [route('backend.user.index') => trans('user::user.user'), '#' => trans('user::account.profile')]
-        );
         return view('user::profile', compact('account'));
     }
 
     /**
      * @param \Minhbang\User\Requests\UpdateProfileRequest $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function postProfile(UpdateProfileRequest $request)
+    public function profile(UpdateProfileRequest $request)
     {
         $account = user();
         $account->fill($request->except(['password', 'username']));
@@ -86,6 +84,7 @@ class AccountController extends BackendController
                 'content' => trans('user::account.update_profile_success'),
             ]
         );
+
         return redirect(route('backend.dashboard'));
     }
 }

@@ -7,7 +7,7 @@ if (!function_exists('user')) {
      * @param int|string|null $attribute
      * @param int|null $id
      *
-     * @return \Minhbang\User\User|mixed
+     * @return \Minhbang\User\User
      */
     function user($attribute = null, $id = null)
     {
@@ -20,7 +20,8 @@ if (!function_exists('user')) {
             $id = $attribute;
             $attribute = null;
         }
-        return app('user-manager')->user($attribute, $id);
+
+        return UserManager::user($attribute, $id);
     }
 }
 
@@ -43,6 +44,7 @@ if (!function_exists('user_public_path')) {
         if ($code = user('code', $id)) {
             $path = '/' . setting('system.public_files') . "/$code" . ($path ? "/$path" : '');
             $path_full = public_path() . $path;
+
             return check_path($path_full, $ignore_error, $full ? $path_full : $path);
         } else {
             return response_error(3, 'Not call user_public_path() for Guest', $ignore_error);
@@ -67,6 +69,7 @@ if (!function_exists('user_storage_path')) {
     {
         if ($username = user('username', $id)) {
             $path = storage_path("data/{$username}" . ($path ? "/$path" : ''));
+
             return check_path($path, $ignore_error, $path);
         } else {
             return response_error(3, 'Not call user_storage_path() for Guest', $ignore_error);
