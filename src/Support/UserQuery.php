@@ -1,8 +1,6 @@
 <?php
 namespace Minhbang\User\Support;
 
-use Minhbang\User\User;
-
 /**
  * Class UserQuery
  *

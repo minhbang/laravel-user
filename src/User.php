@@ -6,11 +6,10 @@ use Minhbang\Kit\Traits\Model\DatetimeQuery;
 use Minhbang\Kit\Traits\Model\SearchQuery;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Laracasts\Presenter\PresentableTrait;
+use Illuminate\Database\Eloquent\Collection;
 use DB;
 
 /**
@@ -60,9 +59,9 @@ use DB;
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\User searchWhereInDependent($column, $column_dependent, $fn, $empty = [])
  * @mixin \Eloquent
  */
-class User extends Model implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-    use Authenticatable, Authorizable, CanResetPassword;
+    use Authenticatable, CanResetPassword;
     use DatetimeQuery;
     use SearchQuery;
     use PresentableTrait;
@@ -84,6 +83,10 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $new_roles = [];
+    /**
+     * @var Group
+     */
+    protected $groupRoot;
 
     /**
      * Setter $this->roles = $value
@@ -107,7 +110,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected static function boot()
     {
         parent::boot();
-        static::saved(function ($model) {
+        static::saved(function (User $model) {
             $model->syncNewRoles();
         });
     }
@@ -207,18 +210,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Có phải là người tạo $model không?
-     *
-     * @param mixed $model
-     *
-     * @return bool
-     */
-    public function isAuthorOf($model)
-    {
-        return $model->user_id && ($this->id === $model->user_id);
-    }
-
-    /**
      * @param string $value
      */
     public function setPasswordAttribute($value)
@@ -270,11 +261,17 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      */
     public function is($role, $all = false, $exact = false)
     {
-        if (!$this->exists) {
-            return false;
-        }
-
         return $this->{$this->getMethodName('is', $all)}($role, $exact);
+    }
+
+    /**
+     * @param string|array $role
+     *
+     * @return array
+     */
+    protected function parserRole($role)
+    {
+        return $this->getArrayFrom(\RoleManager::getRoleByGroupName($role));
     }
 
     /**
@@ -290,7 +287,8 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         if (!$this->exists) {
             return false;
         }
-        foreach ($this->getArrayFrom($role) as $role) {
+
+        foreach ($this->parserRole($role) as $role) {
             if ($this->hasRole($role, $exact)) {
                 return true;
             }
@@ -312,7 +310,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         if (!$this->exists) {
             return false;
         }
-        foreach ($this->getArrayFrom($role) as $role) {
+        foreach ($this->parserRole($role) as $role) {
             if (!$this->hasRole($role, $exact)) {
                 return false;
             }
@@ -504,44 +502,69 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     }
 
     /**
-     * Là thủ trưởng một cơ quan, đơn vị
-     * - Thuộc user_group (cơ quan, đơn vị) chính, depth = 1
-     * - Và được gán Role 'Thủ trường', 'truong_*' hoặc 'pho_*', vd; truong_phong, pho_phong,...
-     *
-     * @param string|int $roles Roles để xác
+     * @param \Minhbang\User\Support\HasOwner $model
      *
      * @return bool
      */
-    /*public function isGroupManager($roles = 'truong_*|pho_*')
+    public function isOwnerOf($model)
     {
-        return $this->exists && $this->group && $this->group->depth == 1 && $this->isOne($roles);
-    }*/
+        return $model->user_id && ($this->id === $model->user_id);
+    }
 
     /**
-     * Là Thủ trưởng đơn vị của $someone?
-     * - Là thủ trưởng cơ quan, đơn vị (chính)
-     * - Và cùng đơn vị hoặc thuộc đơn vị cấp trên của $someone
+     * Lấy group cao nhất (depth = 1)
      *
-     * @param static|int $someone
-     *
-     * @return bool
+     * @return \Minhbang\User\Group
      */
-    /*public function isManagerOf($someone)
+    public function getGroupRoot()
     {
-        return $this->isGroupManager() && $someone->group && $this->group->isSelfOrAncestorOf($someone->group);
-    }*/
+        if (is_null($this->groupRoot)) {
+            $this->groupRoot = $this->group->getRoot1();
+        }
+
+        return $this->groupRoot;
+    }
 
     /**
-     * Là người quản lý danh mục $category
-     * - Là thủ trưởng một cơ quan, đơn vị
-     * - Cơ quan, đơn vị đơn vị đó phải quản lý $category
+     * Lấy users cùng group
      *
-     * @param \Minhbang\Category\Category $category
+     * @param bool $root
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getSameGroupUsers($root = true)
+    {
+        return $this->group ?
+            ($root ? $this->group->users : $this->getGroupRoot()->users) :
+            new Collection();
+    }
+
+    /**
+     * Lấy categories cơ quan mình được giao quản lý
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+
+    public function getGroupCategories()
+    {
+        if ($group = $this->group) {
+            return $group->getRoot1()->categories()->get();
+        } else {
+            return new Collection();
+        }
+    }
+
+    /**
+     * User có thể thực hiện $action đối với $model (với tham số $params)
+     *
+     * @param string $action
+     * @param \Minhbang\Security\AccessControllable|mixed $model
+     * @param array $params
      *
      * @return bool
      */
-    /*public function isModeratorOf($category)
+    public function can($action, $model, $params = [])
     {
-        return $this->isGroupManager() && $this->group->isModeratorOf($category);
-    }*/
+        return $model->allowed($this, $action, $params);
+    }
 }

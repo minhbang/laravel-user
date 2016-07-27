@@ -57,4 +57,11 @@ return [
             'admin'  => 100,
         ],
     ],
+    /**
+     * Định nghĩa các nhóm chức vụ
+     * Sử dụng khi check $user->is();
+     */
+    'role_groups'     => [
+        'administrator' => ['sys.sadmin', 'sys.admin'],
+    ],
 ];

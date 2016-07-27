@@ -88,7 +88,8 @@ class ServiceProvider extends BaseServiceProvider
         $this->app['role-manager'] = $this->app->share(
             function () {
                 return new RoleManager(
-                    config('user.roles')
+                    config('user.roles'),
+                    config('user.role_groups')
                 );
             }
         );

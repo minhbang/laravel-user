@@ -3,7 +3,9 @@ namespace Minhbang\User;
 
 use Laracasts\Presenter\PresentableTrait;
 use Minhbang\Kit\Extensions\NestedSetModel;
+use Minhbang\Category\Category;
 use UserManager;
+
 /**
  * Minhbang\User\Group
  *
@@ -59,6 +61,7 @@ class Group extends NestedSetModel
     public function users($immediate = false)
     {
         $model = config('auth.providers.users.model');
+
         return $immediate ? $this->hasMany($model) : $this->hasManyNestedSet($model);
     }
 
@@ -73,19 +76,20 @@ class Group extends NestedSetModel
     {
         // Categories trực tiếp ($immediate) (được gán qua categories.moderator_id)
         /** @var \Illuminate\Database\Eloquent\Relations\HasMany|\Illuminate\Database\Query\Builder $query */
-        $query = $this->hasMany('Minhbang\Category\Item', 'moderator_id');
+        $query = $this->hasMany(Category::class, 'moderator_id');
         if (!$immediate) {
             /** @var \Minhbang\Category\Category[] $categories */
             $categories = $this->categories(true)->get();
             $ids = [];
             // Lấy IDs các categories con của các categories trực tiếp
             foreach ($categories as $category) {
-                $ids = array_merge($ids, $category->descendants()->lists('id'));
+                $ids = array_merge($ids, $category->descendants()->pluck('id'));
             }
             if ($ids) {
                 $query->orWhereIn('categories.id', $ids);
             }
         }
+
         return $query;
     }
 
@@ -103,6 +107,7 @@ class Group extends NestedSetModel
     public function getTypeNameAttribute()
     {
         $type = $this->getTypeAttribute();
+
         return $type ? UserManager::groupTypeNames($type, null) : null;
     }
 
@@ -128,7 +133,7 @@ class Group extends NestedSetModel
     }
 
     /**
-     * Là có quan quản lý của danh mục $category
+     * Là cơ quan quản lý của danh mục $category
      * - Được giao quản lý danh mục cha (root1, depth = 1) của $category
      *
      * @param \Minhbang\Category\Category $category
@@ -140,6 +145,7 @@ class Group extends NestedSetModel
         if ($this->exists) {
             /** @var \Minhbang\Category\Category $category_root */
             $category_root = $category->getRoot1();
+
             return $category_root && $category_root->moderator_id == $this->id;
         } else {
             return false;
