@@ -42,7 +42,7 @@ class PasswordController extends Controller
                 $message
             ) {
                 $message->subject(
-                    '[' . setting('website.name_short') . '] ' . trans('user::account.password_reset_link')
+                    '[' . setting('app.name_short') . '] ' . trans('user::account.password_reset_link')
                 );
             }
         );

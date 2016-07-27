@@ -81,7 +81,7 @@ class Role
     }
 
     /**
-     * Users đã được gán role này
+     * All user được gán role này
      *
      * @return \Minhbang\User\User[]|\Illuminate\Database\Eloquent\Collection
      */
@@ -98,10 +98,6 @@ class Role
         return $this->users;
     }
 
-    /**
-     * Đếm số users đã được gán role này
-     * @return int
-     */
     public function countUsers()
     {
         if ($this->count_users < 0) {

@@ -1,4 +1,4 @@
-@extends('backend.layouts.master')
+@extends('backend.layouts.main')
 @section('content')
     <div class="ibox ibox-table">
         <div class="ibox-title">

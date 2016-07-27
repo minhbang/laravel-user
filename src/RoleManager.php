@@ -3,24 +3,12 @@ namespace Minhbang\User;
 
 use DB;
 
-/**
- * Class RoleManager
- *
- * @package Minhbang\User
- */
 class RoleManager
 {
     /**
      * @var \Minhbang\User\Role[]
      */
     protected $roles = [];
-
-    /**
-     * Danh sách các nhóm roles
-     *
-     * @var array
-     */
-    protected $groups;
     /**
      * Đã đếm xố lượng users chưa
      *
@@ -32,9 +20,8 @@ class RoleManager
      * RoleManager constructor.
      *
      * @param array $all
-     * @param array $groups
      */
-    public function __construct($all = [], $groups)
+    public function __construct($all = [])
     {
         foreach ($all as $group => $roles) {
             $this->roles[$group] = [];
@@ -42,8 +29,6 @@ class RoleManager
                 $this->roles[$group][$name] = new Role($group, $name, $level);
             }
         }
-
-        $this->groups = (array)$groups;
     }
 
     /**
@@ -70,16 +55,6 @@ class RoleManager
                 return $default;
             }
         }
-    }
-
-    /**
-     * @param string $group
-     *
-     * @return string|array
-     */
-    public function getRoleByGroupName($group)
-    {
-        return is_string($group) && isset($this->groups[$group]) ? $this->groups[$group] : $group;
     }
 
     /**

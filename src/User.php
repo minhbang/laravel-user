@@ -9,8 +9,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Laracasts\Presenter\PresentableTrait;
-use Illuminate\Database\Eloquent\Collection;
-use DB;
+use RoleManager;
 
 /**
  * Class User
@@ -69,7 +68,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     protected $presenter = Presenter::class;
     protected $table = 'users';
     protected $table_group = 'user_groups';
-    protected $fillable = ['name', 'username', 'email', 'password', 'group_id', 'roles'];
+    protected $fillable = ['name', 'username', 'email', 'password', 'group_id'];
     protected $hidden = ['password', 'remember_token'];
 
     /**
@@ -78,43 +77,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * @var array
      */
     protected $roles;
-
-    /**
-     * @var array
-     */
-    protected $new_roles = [];
-    /**
-     * @var Group
-     */
-    protected $groupRoot;
-
-    /**
-     * Setter $this->roles = $value
-     *
-     * @param array $value
-     */
-    public function setRolesAttribute($value)
-    {
-        $this->new_roles = (array)$value;
-    }
-
-    public function syncNewRoles()
-    {
-        if ($this->new_roles) {
-            foreach ($this->new_roles as $role) {
-                $this->attachRole($role);
-            }
-        }
-    }
-
-    protected static function boot()
-    {
-        parent::boot();
-        static::saved(function (User $model) {
-            $model->syncNewRoles();
-        });
-    }
-
 
     /**
      * Lấy $take user phục vụ selectize user
@@ -210,6 +172,18 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
+     * Có phải là người tạo $model không?
+     *
+     * @param mixed $model
+     *
+     * @return bool
+     */
+    public function isAuthorOf($model)
+    {
+        return $model->user_id && ($this->id === $model->user_id);
+    }
+
+    /**
      * @param string $value
      */
     public function setPasswordAttribute($value)
@@ -243,7 +217,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function roles()
     {
         if (is_null($this->roles)) {
-            $this->roles = \RoleManager::getUserRoles($this->id);
+            $this->roles = RoleManager::getUserRoles($this->id);
         }
 
         return $this->roles;
@@ -261,17 +235,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function is($role, $all = false, $exact = false)
     {
-        return $this->{$this->getMethodName('is', $all)}($role, $exact);
-    }
+        if (!$this->exists) {
+            return false;
+        }
 
-    /**
-     * @param string|array $role
-     *
-     * @return array
-     */
-    protected function parserRole($role)
-    {
-        return $this->getArrayFrom(\RoleManager::getRoleByGroupName($role));
+        return $this->{$this->getMethodName('is', $all)}($role, $exact);
     }
 
     /**
@@ -287,8 +255,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         if (!$this->exists) {
             return false;
         }
-
-        foreach ($this->parserRole($role) as $role) {
+        foreach ($this->getArrayFrom($role) as $role) {
             if ($this->hasRole($role, $exact)) {
                 return true;
             }
@@ -310,7 +277,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         if (!$this->exists) {
             return false;
         }
-        foreach ($this->parserRole($role) as $role) {
+        foreach ($this->getArrayFrom($role) as $role) {
             if (!$this->hasRole($role, $exact)) {
                 return false;
             }
@@ -342,14 +309,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
          * kiểm tra 'không chính xác' khi
          * ($exact == false) và ($role không có dạng 'group.name')
          */
-        $not_exact = !$exact && \RoleManager::validate($role);
+        $not_exact = !$exact && RoleManager::validate($role);
         // Duyệt tất cả các roles hiện có của user
         foreach ($this->roles() as $r) {
             if (
                 // được gán
                 str_is($role, $r) ||
                 // cùng group, nhưng được gán role có level cao hơn $role
-                ($not_exact && \RoleManager::isHigherLevel($r, $role))
+                ($not_exact && RoleManager::isHigherLevel($r, $role))
             ) {
                 return true;
             }
@@ -358,34 +325,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return false;
     }
 
-    /**
-     * @param string $group
-     * @param string $name
-     *
-     * @return bool
-     */
-    public function attachRole($group, $name = null)
-    {
-        if (is_null($name)) {
-            list($group, $name) = explode('.', $group, 2);
-        }
-        $level = config("user.roles.{$group}.{$name}");
-        if (!$level || !$this->exists) {
-            return false;
-        } else {
-            if (DB::table('role_user')
-                ->where('user_id', $this->id)
-                ->where('role_group', $group)
-                ->where('role_name', $name)
-                ->count()
-            ) {
-                return true;
-            } else {
-                return DB::table('role_user')
-                    ->insert(['user_id' => $this->id, 'role_group' => $group, 'role_name' => $name]);
-            }
-        }
-    }
 
     /**
      * Hàm 'động' kiểm tra role, vd:
@@ -502,69 +441,44 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
-     * @param \Minhbang\User\Support\HasOwner $model
+     * Là thủ trưởng một cơ quan, đơn vị
+     * - Thuộc user_group (cơ quan, đơn vị) chính, depth = 1
+     * - Và được gán Role 'Thủ trường', 'truong_*' hoặc 'pho_*', vd; truong_phong, pho_phong,...
+     *
+     * @param string|int $roles Roles để xác
      *
      * @return bool
      */
-    public function isOwnerOf($model)
+    /*public function isGroupManager($roles = 'truong_*|pho_*')
     {
-        return $model->user_id && ($this->id === $model->user_id);
-    }
+        return $this->exists && $this->group && $this->group->depth == 1 && $this->isOne($roles);
+    }*/
 
     /**
-     * Lấy group cao nhất (depth = 1)
+     * Là Thủ trưởng đơn vị của $someone?
+     * - Là thủ trưởng cơ quan, đơn vị (chính)
+     * - Và cùng đơn vị hoặc thuộc đơn vị cấp trên của $someone
      *
-     * @return \Minhbang\User\Group
-     */
-    public function getGroupRoot()
-    {
-        if (is_null($this->groupRoot)) {
-            $this->groupRoot = $this->group->getRoot1();
-        }
-
-        return $this->groupRoot;
-    }
-
-    /**
-     * Lấy users cùng group
-     *
-     * @param bool $root
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function getSameGroupUsers($root = true)
-    {
-        return $this->group ?
-            ($root ? $this->group->users : $this->getGroupRoot()->users) :
-            new Collection();
-    }
-
-    /**
-     * Lấy categories cơ quan mình được giao quản lý
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-
-    public function getGroupCategories()
-    {
-        if ($group = $this->group) {
-            return $group->getRoot1()->categories()->get();
-        } else {
-            return new Collection();
-        }
-    }
-
-    /**
-     * User có thể thực hiện $action đối với $model (với tham số $params)
-     *
-     * @param string $action
-     * @param \Minhbang\Security\AccessControllable|mixed $model
-     * @param array $params
+     * @param static|int $someone
      *
      * @return bool
      */
-    public function can($action, $model, $params = [])
+    /*public function isManagerOf($someone)
     {
-        return $model->allowed($this, $action, $params);
-    }
+        return $this->isGroupManager() && $someone->group && $this->group->isSelfOrAncestorOf($someone->group);
+    }*/
+
+    /**
+     * Là người quản lý danh mục $category
+     * - Là thủ trưởng một cơ quan, đơn vị
+     * - Cơ quan, đơn vị đơn vị đó phải quản lý $category
+     *
+     * @param \Minhbang\Category\Category $category
+     *
+     * @return bool
+     */
+    /*public function isModeratorOf($category)
+    {
+        return $this->isGroupManager() && $this->group->isModeratorOf($category);
+    }*/
 }

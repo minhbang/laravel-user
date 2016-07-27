@@ -4,7 +4,6 @@ namespace Minhbang\User\Controllers\Backend;
 use Minhbang\Kit\Extensions\BackendController;
 use Minhbang\Kit\Traits\Controller\QuickUpdateActions;
 use Minhbang\User\User;
-use UserManager;
 use Request;
 use Datatable;
 use Html;
@@ -44,7 +43,7 @@ class UserController extends BackendController
         $key = 'backend.user.group_type';
         $type = $type ?: session($key, 'normal');
         session([$key => $type]);
-        $this->manager = UserManager::groups($type);
+        $this->manager = app('user-manager')->groups($type);
         $this->type = $type;
     }
 

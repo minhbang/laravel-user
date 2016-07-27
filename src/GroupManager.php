@@ -2,7 +2,7 @@
 namespace Minhbang\User;
 
 use Minhbang\Kit\Traits\Presenter\NestablePresenter;
-use UserManager;
+
 /**
  * Class GroupManager
  *
@@ -93,7 +93,7 @@ class GroupManager
      */
     public function typeNames()
     {
-        return UserManager::groupTypeNames();
+        return app('user-manager')->groupTypeNames();
     }
 
     /**
@@ -101,7 +101,7 @@ class GroupManager
      */
     public function typeName()
     {
-        return UserManager::groupTypeNames($this->_type_root->system_name);
+        return app('user-manager')->groupTypeNames($this->_type_root->system_name);
     }
 
     /**

@@ -21,7 +21,7 @@ if (!function_exists('user')) {
             $attribute = null;
         }
 
-        return UserManager::user($attribute, $id);
+        return app('user-manager')->user($attribute, $id);
     }
 }
 

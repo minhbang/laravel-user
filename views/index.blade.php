@@ -1,4 +1,4 @@
-@extends('backend.layouts.master')
+@extends('backend.layouts.main')
 @section('content')
 <div id="user-manage-tools" class="hidden">
     <div class="dataTables_toolbar">

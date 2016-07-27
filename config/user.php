@@ -17,30 +17,6 @@ return [
         'group' => 'role:sys.admin',
         'role'  => 'role:sys.admin',
     ],
-    // Định nghĩa menus cho user
-    'menus'           => [
-        'backend.sidebar.user.manager'    => [
-            'priority' => 1,
-            'url'      => 'route:backend.user.index',
-            'label'    => 'trans:user::user.user',
-            'icon'     => 'fa-users',
-            'active'   => ['backend/user', 'backend/user/*'],
-        ],
-        'backend.sidebar.user.user_group' => [
-            'priority' => 2,
-            'url'      => 'route:backend.user_group.index',
-            'label'    => 'trans:user::group.group',
-            'icon'     => 'fa-sitemap',
-            'active'   => 'backend/user_group*',
-        ],
-        'backend.sidebar.user.role'       => [
-            'priority' => 3,
-            'url'      => 'route:backend.role.index',
-            'label'    => 'trans:user::role.roles',
-            'icon'     => 'fa-male',
-            'active'   => 'backend/role*',
-        ],
-    ],
 
     /**
      * Định nghĩa các chức vụ
@@ -56,12 +32,5 @@ return [
             'sadmin' => 200,
             'admin'  => 100,
         ],
-    ],
-    /**
-     * Định nghĩa các nhóm chức vụ
-     * Sử dụng khi check $user->is();
-     */
-    'role_groups'     => [
-        'administrator' => ['sys.sadmin', 'sys.admin'],
     ],
 ];

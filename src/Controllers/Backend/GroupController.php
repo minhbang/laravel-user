@@ -2,7 +2,6 @@
 namespace Minhbang\User\Controllers\Backend;
 
 use Request;
-use UserManager;
 use Minhbang\User\Group;
 use Minhbang\User\Requests\GroupRequest;
 use Minhbang\Kit\Extensions\BackendController;
@@ -39,7 +38,7 @@ class GroupController extends BackendController
         $key = 'backend.user_group.group_type';
         $type = $type ?: session($key, 'normal');
         session([$key => $type]);
-        $this->manager = UserManager::groups($type);
+        $this->manager = app('user-manager')->groups($type);
         $this->type = $type;
     }
 

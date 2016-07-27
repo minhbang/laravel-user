@@ -1,6 +1,5 @@
 <?php
 namespace Minhbang\User;
-
 /**
  * Class Manager
  *
@@ -29,11 +28,11 @@ class Manager
     protected $users = [];
 
     /**
-     * New User model instance
+     * User model hiện tại
      *
      * @var \Minhbang\User\User
      */
-    protected $new_user;
+    protected $user = false;
 
     /**
      * UserManager constructor.
@@ -139,11 +138,11 @@ class Manager
             $user = $this->users[$id];
         } else {
             // User hiện tại
-            if (!$this->new_user) {
-                $this->new_user = new $user_class();
+            if ($this->user === false) {
+                $this->user = auth()->user();
+                $this->user = $this->user ?: new $user_class();
             }
-            $user = auth()->user();
-            $user = $user ?: $this->new_user;
+            $user = $this->user;
         }
 
         return $attribute ? $user->$attribute : $user;
