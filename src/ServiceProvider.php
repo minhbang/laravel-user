@@ -77,22 +77,18 @@ class ServiceProvider extends BaseServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/user.php', 'user');
-        $this->app['user-manager'] = $this->app->share(
-            function () {
-                return new Manager(
-                    config('user.group_types'),
-                    config('user.group_max_depth')
-                );
-            }
-        );
-        $this->app['role-manager'] = $this->app->share(
-            function () {
-                return new RoleManager(
-                    config('user.roles'),
-                    config('user.role_groups')
-                );
-            }
-        );
+        $this->app->singleton('user-manager', function () {
+            return new Manager(
+                config('user.group_types'),
+                config('user.group_max_depth')
+            );
+        });
+        $this->app->singleton('role-manager', function () {
+            return new RoleManager(
+                config('user.roles'),
+                config('user.role_groups')
+            );
+        });
         // add AccessControl alias
         $this->app->booting(
             function () {
