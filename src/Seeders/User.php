@@ -2,7 +2,7 @@
 namespace Minhbang\User\Seeders;
 
 use DB;
-use Minhbang\User\User as Model;
+use Minhbang\User\User as UserModel;
 use Minhbang\User\Group as GroupModel;
 
 /**
@@ -28,7 +28,7 @@ class User
             $group_id = 2;
         }
 
-        $user = Model::create([
+        $user = UserModel::create([
             'name'           => $data[0],
             'username'       => $data[1],
             'email'          => "{$data[1]}@domain.com",

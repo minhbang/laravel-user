@@ -27,14 +27,10 @@ class Manager
      * @var \Minhbang\User\User[]
      */
     protected $users = [];
-
     /**
-     * New User model instance
-     *
-     * @var \Minhbang\User\User
+     * @var User
      */
     protected $new_user;
-
     /**
      * UserManager constructor.
      *
@@ -116,36 +112,5 @@ class Manager
         } else {
             return $this->group_types;
         }
-    }
-
-    /**
-     * Lấy user model hiện tại (chưa đăng nhập thì tạo mới, !No DB save), hoặc có $id
-     * Hoặc chỉ $attribute
-     *
-     * @param string|null $attribute
-     * @param int|null $id
-     *
-     * @return \Minhbang\User\User
-     */
-    public function user($attribute = null, $id = null)
-    {
-        $user_class = config('auth.providers.users.model');
-        if ($id) {
-            // User by ID
-            if (!isset($this->users[$id])) {
-                $this->users[$id] = $user_class::find($id);
-                $this->users[$id] = $this->users[$id] ?: new $user_class();
-            }
-            $user = $this->users[$id];
-        } else {
-            // User hiện tại
-            if (!$this->new_user) {
-                $this->new_user = new $user_class();
-            }
-            $user = auth()->user();
-            $user = $user ?: $this->new_user;
-        }
-
-        return $attribute ? $user->$attribute : $user;
     }
 }

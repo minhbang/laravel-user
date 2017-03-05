@@ -1,6 +1,6 @@
 <?php
 Route::group(
-    ['namespace' => 'Minhbang\User\Controllers'],
+    ['namespace' => 'Minhbang\User\Controllers', 'middleware' => 'web'],
     function () {
         // Auth
         Route::get('auth/logout', ['as' => 'auth.logout', 'uses' => 'AuthController@logout']);
@@ -26,15 +26,16 @@ Route::group(
 );
 // Backend ===================================================================================
 Route::group(
-    ['prefix' => 'backend', 'namespace' => 'Minhbang\User\Controllers\Backend'],
+    ['prefix' => 'backend', 'as' => 'backend.', 'namespace' => 'Minhbang\User\Controllers\Backend'],
     function () {
         // User Manage
         Route::group(['middleware' => config('user.middlewares.user')], function () {
             Route::group(
-                ['prefix' => 'user', 'as' => 'backend.user.'],
+                ['prefix' => 'user', 'as' => 'user.'],
                 function () {
-                    Route::get('data', ['as' => 'data', 'uses' => 'UserController@data']);
-                    Route::post('{user}/quick_update', ['as' => 'quick_update', 'uses' => 'UserController@quickUpdate']);
+                    Route::get('data/{type}', ['as' => 'data', 'uses' => 'UserController@data']);
+                    Route::post('{user}/quick_update',
+                        ['as' => 'quick_update', 'uses' => 'UserController@quickUpdate']);
                     Route::get('of/{type}', ['as' => 'type', 'uses' => 'UserController@index']);
                     Route::get('select/{query}/{ignore?}', ['as' => 'select', 'uses' => 'UserController@select']);
                 }
@@ -45,9 +46,9 @@ Route::group(
         // User Group Manage
         Route::group(['middleware' => config('user.middlewares.group')], function () {
             Route::group(
-                ['prefix' => 'user_group', 'as' => 'backend.user_group.'],
+                ['prefix' => 'user_group', 'as' => 'user_group.'],
                 function () {
-                    Route::get('data', ['as' => 'data', 'uses' => 'GroupController@data']);
+                    Route::get('data/{type}', ['as' => 'data', 'uses' => 'GroupController@data']);
                     Route::get('{user_group}/create', 'GroupController@createChildOf');
                     Route::post('move', ['as' => 'move', 'uses' => 'GroupController@move']);
                     Route::post('{user_group}', ['as' => 'storeChildOf', 'uses' => 'GroupController@storeChildOf']);
@@ -58,7 +59,7 @@ Route::group(
         });
         // Role Manage
         Route::group(
-            ['prefix' => 'role', 'as' => 'backend.role.', 'middleware' => config('user.middlewares.role')],
+            ['prefix' => 'role', 'as' => 'role.', 'middleware' => config('user.middlewares.role')],
             function () {
                 Route::get('/', ['as' => 'index', 'uses' => 'RoleController@index']);
                 Route::get('{role}', ['as' => 'show', 'uses' => 'RoleController@show']);

@@ -25,22 +25,27 @@ class GroupController extends BackendController
      */
     protected $type;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->switchType();
-    }
-
     /**
      * @param null|string $type
      */
     protected function switchType($type = null)
     {
-        $key = 'backend.user_group.group_type';
-        $type = $type ?: session($key, 'normal');
-        session([$key => $type]);
-        $this->manager = UserManager::groups($type);
-        $this->type = $type;
+        $this->type = $type ?: 'normal';
+        session(['backend.user.group_type' => $this->type]);
+    }
+
+    /**
+     * Lấy user group manager
+     *
+     * @return \Minhbang\User\GroupManager
+     */
+    protected function manager()
+    {
+        if (!$this->manager) {
+            $this->manager = UserManager::groups(session('backend.user.group_type', 'normal'));
+        }
+
+        return $this->manager;
     }
 
     /**
@@ -51,15 +56,16 @@ class GroupController extends BackendController
     public function index($type = null)
     {
         $this->switchType($type);
-        $max_depth = $this->manager->max_depth;
-        $nestable = $this->manager->nestable();
-        $types = $this->manager->typeNames();
+        $max_depth = $this->manager()->max_depth;
+        $nestable = $this->manager()->nestable();
+        $types = $this->manager()->typeNames();
         $current = $this->type;
         $this->buildHeading(
             [trans('user::group.manage'), "[{$types[$current]}]"],
             'fa-sitemap',
             ['#' => trans('user::group.group')]
         );
+
         return view('user::group.index', compact('max_depth', 'nestable', 'types', 'current'));
     }
 
@@ -101,6 +107,7 @@ class GroupController extends BackendController
         }
         $group = new Group();
         $method = 'post';
+
         return view('user::group.form', compact('parent_title', 'url', 'method', 'group'));
     }
 
@@ -143,7 +150,8 @@ class GroupController extends BackendController
         $group = new Group();
         $group->fill($request->all());
         $group->save();
-        $group->makeChildOf($parent ?: $this->manager->typeRoot());
+        $group->makeChildOf($parent ?: $this->manager()->typeRoot());
+
         return view(
             '_modal_script',
             [
@@ -181,6 +189,7 @@ class GroupController extends BackendController
         $parent_title = $parent->isRoot() ? '- ROOT -' : $parent->full_name;
         $url = route('backend.user_group.update', ['user_group' => $group->id]);
         $method = 'put';
+
         return view('user::group.form', compact('parent_title', 'url', 'method', 'group'));
     }
 
@@ -196,6 +205,7 @@ class GroupController extends BackendController
     {
         $group->fill($request->all());
         $group->save();
+
         return view(
             '_modal_script',
             [
@@ -219,6 +229,7 @@ class GroupController extends BackendController
     public function destroy(Group $group)
     {
         $group->delete();
+
         return response()->json(
             [
                 'type'    => 'success',
@@ -228,12 +239,15 @@ class GroupController extends BackendController
     }
 
     /**
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Laracasts\Presenter\Exceptions\PresenterException
+     * @param string $type
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function data()
+    public function data($type)
     {
-        return response()->json(['html' => $this->manager->nestable()]);
+        $this->switchType($type);
+
+        return response()->json(['html' => $this->manager()->nestable()]);
     }
 
     /**
@@ -255,6 +269,7 @@ class GroupController extends BackendController
                     }
                 }
             }
+
             return response()->json(
                 [
                     'type'    => 'success',

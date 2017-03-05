@@ -1,10 +1,10 @@
 <?php
+
 namespace Minhbang\User\Controllers;
 
 use Minhbang\Kit\Extensions\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Auth;
-use Cache;
 use Illuminate\Http\Request;
 
 /**
@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 class AuthController extends Controller
 {
     use ThrottlesLogins;
+
 
     //Maximum number of login attempts for delaying further attempts.
     public $maxLoginAttempts = 5;
@@ -34,54 +35,42 @@ class AuthController extends Controller
 
     /**
      * @param \Illuminate\Http\Request $request
-     * @return $this|\Illuminate\Http\RedirectResponse
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     public function login(Request $request)
     {
         $this->validate($request, ['username' => 'required', 'password' => 'required']);
+
         if ($this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
             return $this->lockoutResponse($request);
         }
 
         $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials, $request->has('remember'))) {
-            return $this->handleUserWasAuthenticated($request);
+            return $this->loginResponse($request);
         }
         // If the login attempt was unsuccessful we will increment the number of attempts
         $this->incrementLoginAttempts($request);
 
-        return back()
-            ->withInput($request->only('username', 'remember'))
-            ->withErrors(
-                [
-                    'msg' => trans('user::account.credentials_invalid'),
-                ]
-            );
+        return $this->failedResponse($request);
     }
 
     /**
-     * Log the user out of the application.
+     * @param \Illuminate\Http\Request $request
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
+        $request->session()->flush();
+        $request->session()->regenerate();
 
         return redirect('/');
-    }
-
-    /**
-     * Send the response after the user was authenticated.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    protected function handleUserWasAuthenticated(Request $request)
-    {
-        $this->clearLoginAttempts($request);
-        return redirect()->intended('/');
     }
 
     /**
@@ -89,28 +78,62 @@ class AuthController extends Controller
      *
      * @return string
      */
-    public function loginUsername()
+    public function username()
     {
-        return 'username';
+        return config('user.username');
     }
 
     /**
      * Redirect the user after determining they are locked out.
      *
      * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     protected function lockoutResponse(Request $request)
     {
-        $seconds = (int)Cache::get($this->getLoginLockExpirationKey($request)) - time();
+        $seconds = $this->limiter()->availableIn(
+            $this->throttleKey($request)
+        );
+        $message = trans('user::account.throttle', compact('seconds'));
+
+        if ($request->expectsJson()) {
+            return response()->json([$this->username() => $message], 423);
+        }
 
         return back()
-            ->withInput($request->only('username', 'remember'))
-            ->withErrors(
-                [
-                    'msg' => trans('user::account.throttle', compact('seconds')),
-                ]
-            );
+            ->withInput($request->only($this->username(), 'remember'))
+            ->withErrors(['msg' => $message]);
+    }
 
+    /**
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
+    protected function failedResponse(Request $request)
+    {
+        $errors = trans('user::account.credentials_invalid');
+
+        if ($request->expectsJson()) {
+            return response()->json([$this->username() => $errors], 422);
+        }
+
+        return back()
+            ->withInput($request->only($this->username(), 'remember'))
+            ->withErrors(['msg' => $errors]);
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function loginResponse(Request $request)
+    {
+        $request->session()->regenerate();
+        $this->clearLoginAttempts($request);
+
+        return redirect()->intended('/');
     }
 }

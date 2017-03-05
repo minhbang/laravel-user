@@ -1,70 +1,66 @@
 @extends('backend.layouts.master')
 @section('content')
-<div id="user-manage-tools" class="hidden">
-    <div class="dataTables_toolbar">
-        {!! Html::linkButton('#', trans('common.search'), ['class'=>'advanced_search_collapse','type'=>'info', 'size'=>'xs', 'icon' => 'search']) !!}
-        {!! Html::linkButton('#', trans('common.all'), ['class'=>'filter-clear', 'type'=>'warning', 'size'=>'xs', 'icon' => 'list']) !!}
-        {!! Html::modalButton(
-            route('backend.user.create'),
-            trans('user::user.create'),
-            [
-                'title' => trans('user::user.create').": <span class=\"text-warning\">$typeName</span>",
-                'label' => trans('common.save'),
-                'icon'  => 'fa-user',
-            ],
-            ['type'=>'success', 'size'=>'xs', 'icon' => 'plus-sign']
-        ) !!}
-    </div>
-    <div class="bg-warning dataTables_advanced_search">
-        <form class="form-horizontal" role="form">
-            {!! Form::hidden('search_form', 1) !!}
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        {!! Form::label('search_created_at', trans('common.created_at'), ['class' => 'col-md-3 control-label']) !!}
-                        <div class="col-md-9">
-                            {!! Form::daterange('search_created_at', [], ['class' => 'form-control']) !!}
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        {!! Form::label('search_updated_at', trans('common.updated_at'), ['class' => 'col-md-3 control-label']) !!}
-                        <div class="col-md-9">
-                            {!! Form::daterange('search_updated_at', [], ['class' => 'form-control']) !!}
-                        </div>
-                    </div>
-                </div>
+    <div class="ibox ibox-table">
+        <div class="ibox-title">
+            <h5>{!! trans('user::user.manage_title') !!}</h5>
+            <div class="buttons">
+                {!! Html::linkButton('#', trans('common.filter'), ['class'=>'advanced_filter_collapse','type'=>'info', 'size'=>'xs', 'icon' => 'filter']) !!}
+                {!! Html::linkButton('#', trans('common.all'), ['class'=>'advanced_filter_clear', 'type'=>'warning', 'size'=>'xs', 'icon' => 'list']) !!}
+                {!! Html::modalButton(
+                    route('backend.user.create'),
+                    trans('user::user.create'),
+                    [
+                        'title' => trans('user::user.create').": <span class=\"text-warning\">$typeName</span>",
+                        'label' => trans('common.save'),
+                        'icon'  => 'fa-user',
+                    ],
+                    ['type'=>'success', 'size'=>'xs', 'icon' => 'plus-sign']
+                ) !!}
             </div>
-        </form>
+        </div>
+        <div class="ibox-content">
+            <div class="bg-warning dataTables_advanced_filter hidden">
+                <form class="form-horizontal" role="form">
+                    {!! Form::hidden('filter_form', 1) !!}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {!! Form::label('filter_created_at', trans('common.created_at'), ['class' => 'col-md-3 control-label']) !!}
+                                <div class="col-md-9">
+                                    {!! Form::daterange('filter_created_at', [], ['class' => 'form-control']) !!}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {!! Form::label('filter_updated_at', trans('common.updated_at'), ['class' => 'col-md-3 control-label']) !!}
+                                <div class="col-md-9">
+                                    {!! Form::daterange('filter_updated_at', [], ['class' => 'form-control']) !!}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            {!! $html->table(['id' => 'user-manage']) !!}
+        </div>
     </div>
-</div>
-<div class="ibox ibox-table">
-    <div class="ibox-title">
-        <h5>{!! trans('user::user.manage_title') !!}</h5>
-    </div>
-    <div class="ibox-content">
-    {!! $table->render('_datatable') !!}
-    </div>
-</div>
-@stop
+@endsection
 
-@section('script')
+@push('scripts')
 <script type="text/javascript">
-    function datatableDrawCallback(oTable) {
-        oTable.find('a.quick-update').quickUpdate({
-            url: '{{ route('backend.user.quick_update', ['user' => '__ID__']) }}',
-            container: '#user-manage',
-            dataTable: oTable
+    window.datatableDrawCallback = function (dataTableApi) {
+        dataTableApi.$('a.quick-update').quickUpdate({
+            'url': '{{ route('backend.user.quick_update', ['user' => '__ID__']) }}',
+            'container': '#user-manage',
+            'dataTableApi': dataTableApi
         });
     };
+    window.settings.mbDatatables = {
+        trans: {
+            name: '{{trans('user::user.user')}}'
+        }
+    }
 </script>
-    @include(
-        '_datatable_script',
-        [
-            'name' => trans('user::user.user'),
-            'data_url' => route('backend.user.data'),
-            'drawCallback' => 'window.datatableDrawCallback'
-        ]
-    )
-@stop
+{!! $html->scripts() !!}
+@endpush

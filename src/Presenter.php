@@ -3,6 +3,7 @@ namespace Minhbang\User;
 
 use Minhbang\Kit\Traits\Presenter\DatetimePresenter;
 use Laracasts\Presenter\Presenter as BasePresenter;
+use Authority;
 
 /**
  * Class Presenter
@@ -18,13 +19,6 @@ class Presenter extends BasePresenter
      */
     public function roles()
     {
-        $names = [];
-        foreach ($this->entity->roles() as $role) {
-            if ($role) {
-                $names[] = '<code>' . \RoleManager::roles("{$role}.title") . '</code>';
-            }
-        }
-
-        return implode('<br />', $names);
+        return '<code>' . implode('</code><code>', Authority::user($this->entity)->roleTitles()) . '</code>';
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Minhbang\User;
 
 use Laracasts\Presenter\Presenter;
@@ -43,14 +44,6 @@ class GroupPresenter extends Presenter
                 <span class="glyphicon glyphicon-plus"></span>
             </a>';
         }
-
-        $users = '<a href="' . url("backend/user_group/{$this->entity->id}/users") . '"
-           data-toggle="tooltip"
-           class="modal-link btn btn-success btn-xs"
-           data-title="' . trans('common.object_details_view', ['name' => $name]) . '"
-           data-icon="align-justify"><span class="glyphicon glyphicon-list"></span>
-        </a>';
-
         $show = '<a href="' . url("backend/user_group/{$this->entity->id}") . '"
            data-toggle="tooltip"
            class="modal-link btn btn-success btn-xs"
@@ -71,6 +64,7 @@ class GroupPresenter extends Presenter
             data-item_title="' . $this->entity->full_name . '"
             class="delete_item btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span>
         </a>';
+
         return $child . $show . $edit . $delete;
     }
 }

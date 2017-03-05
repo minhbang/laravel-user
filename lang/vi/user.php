@@ -3,7 +3,7 @@
 return [
     'create'               => 'Thêm User',
     'manage'               => 'Quản lý User',
-    'manage_title'         => 'Danh sách User <small>sắp xếp theo thời gian chỉnh sửa</small>',
+    'manage_title'         => 'Danh sách User',
     'password'             => 'Mật khẩu',
     'update_password_hint' => 'Để trống nếu không muốn thay đổi mật khẩu',
     'users'                => 'Nhân sự',

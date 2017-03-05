@@ -4,7 +4,7 @@ namespace Minhbang\User;
 
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\AliasLoader;
-use Minhbang\Kit\Extensions\BaseServiceProvider;
+use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use MenuManager;
 
 /**
@@ -25,6 +25,9 @@ class ServiceProvider extends BaseServiceProvider
     {
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'user');
         $this->loadViewsFrom(__DIR__ . '/../views', 'user');
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadRoutesFrom(__DIR__ . '/routes.php');
+
         $this->publishes(
             [
                 __DIR__ . '/../views'           => base_path('resources/views/vendor/user'),
@@ -32,21 +35,6 @@ class ServiceProvider extends BaseServiceProvider
                 __DIR__ . '/../config/user.php' => config_path('user.php'),
             ]
         );
-        $this->publishes(
-            [
-                __DIR__ . '/../database/migrations/2014_10_11_000000_create_user_groups_table.php'     =>
-                    database_path('migrations/2014_10_11_000000_create_user_groups_table.php'),
-                __DIR__ . '/../database/migrations/2014_10_12_000000_create_users_table.php'           =>
-                    database_path('migrations/2014_10_12_000000_create_users_table.php'),
-                __DIR__ . '/../database/migrations/2014_10_12_100000_create_password_resets_table.php' =>
-                    database_path('migrations/2014_10_12_100000_create_password_resets_table.php'),
-                __DIR__ . '/../database/migrations/2014_11_05_100000_create_role_user_table.php'       =>
-                    database_path('migrations/2014_11_05_100000_create_role_user_table.php'),
-            ],
-            'db'
-        );
-
-        $this->mapWebRoutes($router, __DIR__ . '/routes.php', config('user.add_route'));
 
         // pattern filters
         $router->pattern('user', '[0-9]+');
@@ -83,19 +71,10 @@ class ServiceProvider extends BaseServiceProvider
                 config('user.group_max_depth')
             );
         });
-        $this->app->singleton('role-manager', function () {
-            return new RoleManager(
-                config('user.roles'),
-                config('user.role_groups')
-            );
-        });
         // add AccessControl alias
-        $this->app->booting(
-            function () {
-                AliasLoader::getInstance()->alias('UserManager', ManagerFacade::class);
-                AliasLoader::getInstance()->alias('RoleManager', RoleManagerFacade::class);
-            }
-        );
+        $this->app->booting(function () {
+            AliasLoader::getInstance()->alias('UserManager', Facade::class);
+        });
     }
 
     /**
@@ -105,6 +84,6 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function provides()
     {
-        return ['user-manager', 'role-manager'];
+        return ['user-manager'];
     }
 }

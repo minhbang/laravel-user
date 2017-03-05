@@ -6,9 +6,10 @@ use Minhbang\Kit\Traits\Controller\QuickUpdateActions;
 use Minhbang\User\User;
 use UserManager;
 use Request;
-use Datatable;
-use Html;
+use Datatables;
 use Minhbang\User\Requests\UserRequest;
+use Minhbang\Kit\Extensions\DatatableBuilder as Builder;
+use Minhbang\User\UserTransformer;
 
 /**
  * Class UserController
@@ -30,61 +31,45 @@ class UserController extends BackendController
      */
     protected $type;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->switchGroupType();
-    }
-
     /**
      * @param null|string $type
      */
     protected function switchGroupType($type = null)
     {
-        $key = 'backend.user.group_type';
-        $type = $type ?: session($key, 'normal');
-        session([$key => $type]);
-        $this->manager = UserManager::groups($type);
-        $this->type = $type;
+        $this->type = $type ?: 'normal';
+        session(['backend.user.type' => $this->type]);
     }
 
     /**
-     * @param null|string $type
+     * Lấy user group manager
+     *
+     * @return \Minhbang\User\GroupManager
+     */
+    protected function manager()
+    {
+        if (!$this->manager) {
+            $this->manager = UserManager::groups(session('backend.user.type', 'normal'));
+        }
+
+        return $this->manager;
+    }
+
+    /**
+     * @param \Minhbang\Kit\Extensions\DatatableBuilder $builder
+     * @param string $type
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     * @throws \Exception
      */
-    public function index($type = null)
+    public function index(Builder $builder, $type = null)
     {
         $this->switchGroupType($type);
-        $tableOptions = [
-            'id'        => 'user-manage',
-            'row_index' => true,
-        ];
-        $options = [
-            'aoColumnDefs' => [
-                ['sClass' => 'min-width', 'aTargets' => [0, 1, -1, -2]],
-            ],
-        ];
-        $table = Datatable::table()
-            ->addColumn(
-                '#',
-                trans('user::user.username'),
-                trans('user::user.name'),
-                trans('user::user.email'),
-                trans('user::role.roles'),
-                trans('common.actions')
-            )
-            ->setOptions($options)
-            ->setCustomValues($tableOptions);
-
-        $typeName = $this->manager->typeName();
+        $typeName = $this->manager()->typeName();
         $buttons = [];
-        foreach ($this->manager->typeNames() as $type => $name) {
+        foreach ($this->manager()->typeNames() as $t => $n) {
             $buttons[] = [
-                route('backend.user.type', ['type' => $type]),
-                $name,
-                ['type' => $type == $this->type ? 'info' : 'default', 'size' => 'xs'],
+                route('backend.user.type', ['type' => $t]),
+                $n,
+                ['type' => $t == $this->type ? 'info' : 'white', 'size' => 'sm'],
             ];
         }
 
@@ -95,122 +80,64 @@ class UserController extends BackendController
             $buttons
         );
 
-        return view('user::index', compact('tableOptions', 'options', 'table', 'typeName'));
+        $builder->ajax(route('backend.user.data', ['type' => $this->type]));
+        $html = $builder->columns([
+            ['data' => 'id', 'name' => 'id', 'title' => 'ID', 'class' => 'min-width text-center'],
+            [
+                'data'  => 'username',
+                'name'  => 'username',
+                'title' => trans('user::user.username'),
+                'class' => 'min-width',
+            ],
+            ['data' => 'name', 'name' => 'name', 'title' => trans('user::user.name')],
+            ['data' => 'email', 'name' => 'email', 'title' => trans('user::user.email')],
+            [
+                'data'       => 'roles',
+                'name'       => 'roles',
+                'title'      => trans('authority::common.roles'),
+                'searchable' => false,
+                'orderable'  => false,
+            ],
+        ])->addAction([
+            'data'  => 'actions',
+            'name'  => 'actions',
+            'title' => trans('common.actions'),
+            'class' => 'min-width',
+        ]);
+
+        return view('user::index', compact('html', 'typeName'));
     }
 
     /**
-     * Danh sách User theo định dạng của Datatables.
+     * @param string $type
      *
-     * @return \Datatable JSON
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function data()
+    public function data($type)
     {
+        $this->switchGroupType($type);
         /** @var User $query */
-        $query = User::inGroup($this->manager->typeRoot())->adminFirst()->orderUpdated();
-        if (Request::has('search_form')) {
+        $query = User::inGroup($this->manager()->typeRoot())->adminFirst();
+
+        if (Request::has('filter_form')) {
             $query = $query
                 ->searchWhereBetween('users.created_at', 'mb_date_vn2mysql')
                 ->searchWhereBetween('users.updated_at', 'mb_date_vn2mysql');
         }
 
-        return Datatable::query($query)
-            ->addColumn(
-                'index',
-                function (User $model) {
-                    return $model->id;
-                }
-            )
-            ->addColumn(
-                'username',
-                function (User $model) {
-                    if ($model->isSysSadmin()) {
-                        return "<span class=\"text-danger\">{$model->username}</span>";
-                    } else {
-                        return Html::linkQuickUpdate(
-                            $model->id,
-                            $model->username,
-                            [
-                                'attr'  => 'username',
-                                'title' => trans("user::user.username"),
-                                'class' => 'w-sm',
-                            ]
-                        );
-                    }
-                }
-            )
-            ->addColumn(
-                'name',
-                function (User $model) {
-                    if ($model->isSysSadmin()) {
-                        return "<span class=\"text-danger\">{$model->name}</span>";
-                    } else {
-                        return Html::linkQuickUpdate(
-                            $model->id,
-                            $model->name,
-                            [
-                                'attr'  => 'name',
-                                'title' => trans("user::user.name"),
-                                'class' => 'w-md',
-                            ]
-                        );
-                    }
-                }
-            )
-            ->addColumn(
-                'email',
-                function (User $model) {
-                    if ($model->isSysSadmin()) {
-                        return "<span class=\"text-danger\">{$model->email}</span>";
-                    } else {
-                        return Html::linkQuickUpdate(
-                            $model->id,
-                            $model->email,
-                            [
-                                'attr'      => 'email',
-                                'title'     => trans("user::user.email"),
-                                'placement' => 'left',
-                                'class'     => 'w-md',
-                            ]
-                        );
-                    }
-                }
-            )
-            ->addColumn(
-                'roles',
-                function (User $model) {
-                    return $model->present()->roles;
-                }
-            )
-            ->addColumn(
-                'actions',
-                function (User $model) {
-                    return user('id') == $model->id ? '' : Html::tableActions(
-                        'backend.user',
-                        ['user' => $model->id],
-                        "{$model->name} ({$model->username})",
-                        trans('user::user.user'),
-                        [
-                            //'renderEdit' => 'link',
-                            //'renderShow' => 'modal-large',
-                        ]
-                    );
-                }
-            )
-            ->searchColumns('users.username', 'users.name')
-            ->make();
+        return Datatables::of($query)->setTransformer(new UserTransformer())->make(true);
     }
 
 
     /**
-     * @return \Illuminate\View\View
-     * @throws \Laracasts\Presenter\Exceptions\PresenterException
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function create()
     {
         $user = new User();
         $url = route('backend.user.store');
         $method = 'post';
-        $groups = $this->manager->selectize();
+        $groups = $this->manager()->selectize();
         $this->buildHeading(
             trans('common.create_object', ['name' => trans('user::user.user')]),
             'plus-sign',
@@ -226,7 +153,7 @@ class UserController extends BackendController
     /**
      * @param \Minhbang\User\Requests\UserRequest $request
      *
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function store(UserRequest $request)
     {
@@ -268,7 +195,7 @@ class UserController extends BackendController
         $this->checkUser($user);
         $url = route('backend.user.update', ['user' => $user->id]);
         $method = 'put';
-        $groups = $this->manager->selectize();
+        $groups = $this->manager()->selectize();
         $this->buildHeading(
             trans('common.update_object', ['name' => trans('user::user.user')]),
             'edit',
@@ -376,8 +303,7 @@ class UserController extends BackendController
     }
 
     /**
-     * Không cho quick update với admin
-     * và new username của user khác không được = 'admin'
+     * Không cho quick update với admin và new username của user khác không được = 'admin'
      *
      * @param \Minhbang\User\User $user
      * @param string $attribute

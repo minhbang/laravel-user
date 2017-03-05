@@ -47,7 +47,7 @@ class Group extends NestedSetModel
 {
     use PresentableTrait;
     protected $table = 'user_groups';
-    protected $presenter = 'Minhbang\User\GroupPresenter';
+    protected $presenter = GroupPresenter::class;
     protected $fillable = ['system_name', 'full_name', 'short_name', 'acronym_name'];
     public $timestamps = false;
 

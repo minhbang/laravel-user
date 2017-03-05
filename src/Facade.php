@@ -1,9 +1,12 @@
 <?php
 namespace Minhbang\User;
 
-use Illuminate\Support\Facades\Facade;
-
-class ManagerFacade extends Facade
+/**
+ * Class Facade
+ *
+ * @package Minhbang\User
+ */
+class Facade extends \Illuminate\Support\Facades\Facade
 {
     /**
      * Get the registered name of the component.

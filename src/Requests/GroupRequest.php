@@ -6,6 +6,7 @@ use Minhbang\Kit\Extensions\Request;
 /**
  * Class GroupRequest
  *
+ * @property-read \Minhbang\User\Group $user_group
  * @package Minhbang\User
  */
 class GroupRequest extends Request
@@ -35,13 +36,13 @@ class GroupRequest extends Request
      */
     public function rules()
     {
-        /** @var \Minhbang\User\Group $group */
-        if ($group = $this->route('user_group')) {
+        if ($this->user_group) {
             //update Group
-            $this->rules['system_name'] .= ',system_name,' . $group->id;
+            $this->rules['system_name'] .= ',system_name,' . $this->user_group->id;
         } else {
             //create Group
         }
+
         return $this->rules;
     }
 
