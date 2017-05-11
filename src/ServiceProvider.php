@@ -6,6 +6,8 @@ use Illuminate\Routing\Router;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use MenuManager;
+use Authority;
+use Kit;
 
 /**
  * Class ServiceProvider
@@ -55,7 +57,10 @@ class ServiceProvider extends BaseServiceProvider
 
         // Add user menus
         MenuManager::addItems(config('user.menus'));
+        Authority::permission()->registerCRUD(User::class);
+        Kit::title(User::class, trans('user::user.users'));
     }
+
 
     /**
      * Register any package services.

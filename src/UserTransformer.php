@@ -1,6 +1,6 @@
 <?php namespace Minhbang\User;
 
-use League\Fractal\TransformerAbstract;
+use Minhbang\Kit\Extensions\ModelTransformer;
 use Html;
 use Authority;
 
@@ -9,16 +9,8 @@ use Authority;
  *
  * @package Minhbang\User
  */
-class UserTransformer extends TransformerAbstract
+class UserTransformer extends ModelTransformer
 {
-    protected $zone;
-
-    public function __construct($zone = 'backend')
-    {
-        $this->zone = $zone;
-    }
-
-    // TODO: Lấy chức vụ của một role
     /**
      * @param \Minhbang\User\User $user
      *

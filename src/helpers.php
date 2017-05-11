@@ -21,10 +21,15 @@ if (!function_exists('user_model')) {
     /**
      * @param null|int|\Minhbang\User\User $param
      *
+     * @param bool $abortIfError
+     *
      * @return \Minhbang\User\User
      */
-    function user_model($param = null)
+    function user_model($param = null, $abortIfError = true)
     {
-        return is_null($param) ? auth()->user() : ($param instanceof User ? $param : User::find($param));
+        $model = is_null($param) ? auth()->user() : ($param instanceof User ? $param : User::find($param));
+        abort_if($abortIfError && is_null($model), 500, "User model is NULL");
+
+        return $model;
     }
 }
