@@ -1,4 +1,4 @@
-@extends('backend.layouts.basic')
+@extends('kit::backend.layouts.basic')
 @section('heading', trans('user::account.reset_password'))
 @section('content')
     {!! Form::open(['class' => 'm-t']) !!}

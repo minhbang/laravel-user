@@ -1,4 +1,4 @@
-@extends('backend.layouts.modal')
+@extends('kit::backend.layouts.modal')
 @section('content')
     <table class="table table-hover table-striped table-bordered table-detail">
         <tr>

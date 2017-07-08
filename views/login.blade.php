@@ -1,4 +1,4 @@
-@extends('backend.layouts.basic')
+@extends('kit::backend.layouts.basic')
 
 @section('heading', Session::get('title') ?: trans('user::account.login_title'))
 

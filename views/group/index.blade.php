@@ -1,4 +1,4 @@
-@extends('backend.layouts.master')
+@extends('kit::backend.layouts.master')
 @section('content')
     <div class="panel panel-default panel-nestable panel-sidebar">
         <div class="panel-heading clearfix">

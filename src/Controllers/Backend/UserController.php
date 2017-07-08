@@ -162,7 +162,7 @@ class UserController extends BackendController
         $user->save();
 
         return view(
-            '_modal_script',
+            'kit::_modal_script',
             [
                 'message'     => [
                     'type'    => 'success',
@@ -221,7 +221,7 @@ class UserController extends BackendController
         $user->save();
 
         return view(
-            '_modal_script',
+            'kit::_modal_script',
             [
                 'message'     => [
                     'type'    => 'success',

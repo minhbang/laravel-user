@@ -153,7 +153,7 @@ class GroupController extends BackendController
         $group->makeChildOf($parent ?: $this->manager()->typeRoot());
 
         return view(
-            '_modal_script',
+            'kit::_modal_script',
             [
                 'message'    => [
                     'type'    => 'success',
@@ -207,7 +207,7 @@ class GroupController extends BackendController
         $group->save();
 
         return view(
-            '_modal_script',
+            'kit::_modal_script',
             [
                 'message'    => [
                     'type'    => 'success',
