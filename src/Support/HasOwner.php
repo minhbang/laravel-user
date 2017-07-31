@@ -8,18 +8,17 @@ namespace Minhbang\User\Support;
  * @property int $user_id
  * @package Minhbang\Kit\Traits\Model
  * @property-read string $table
+ * @property-read string $author
  * @mixin \Eloquent;
  */
-trait HasOwner
-{
+trait HasOwner {
     /**
      * @param string $attribute
      *
      * @return \Minhbang\User\User|mixed
      */
-    public function author($attribute = null)
-    {
-        if ($author = $this->user) {
+    public function author( $attribute = null ) {
+        if ( $author = $this->user ) {
             return $attribute ? $author->{$attribute} : $author;
         } else {
             return null;
@@ -29,9 +28,8 @@ trait HasOwner
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
-    {
-        return $this->belongsTo(config('auth.providers.users.model'));
+    public function user() {
+        return $this->belongsTo( config( 'auth.providers.users.model' ) );
     }
 
     /**
@@ -39,9 +37,8 @@ trait HasOwner
      *
      * @return \Illuminate\Database\Query\Builder
      */
-    public function scopeNotMine($query)
-    {
-        return $query->where("{$this->table}.user_id", '<>', user('id'));
+    public function scopeNotMine( $query ) {
+        return $query->where( "{$this->table}.user_id", '<>', user( 'id' ) );
     }
 
     /**
@@ -49,9 +46,8 @@ trait HasOwner
      *
      * @return \Illuminate\Database\Query\Builder
      */
-    public function scopeMine($query)
-    {
-        return $query->where("{$this->table}.user_id", '=', user('id'));
+    public function scopeMine( $query ) {
+        return $query->where( "{$this->table}.user_id", '=', user( 'id' ) );
     }
 
     /**
@@ -60,11 +56,10 @@ trait HasOwner
      *
      * @return \Illuminate\Database\Query\Builder
      */
-    public function scopeWithAuthor($query, $attribute = 'username')
-    {
+    public function scopeWithAuthor( $query, $attribute = 'username' ) {
         // TODO dùng user() relations
-        return $query->leftJoin('users', 'users.id', '=', "{$this->table}.user_id")
-            ->addSelect("users.{$attribute} as author");
+        return $query->leftJoin( 'users', 'users.id', '=', "{$this->table}.user_id" )
+                     ->addSelect( "users.{$attribute} as author" );
     }
 
     /**
@@ -72,8 +67,7 @@ trait HasOwner
      *
      * @return bool
      */
-    public function isOwnedBy($user)
-    {
+    public function isOwnedBy( $user ) {
         return $user && $this->user_id == $user->id;
     }
 }
