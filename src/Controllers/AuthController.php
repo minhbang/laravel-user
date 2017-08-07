@@ -70,7 +70,7 @@ class AuthController extends Controller
         $request->session()->flush();
         $request->session()->regenerate();
 
-        return redirect('/');
+        return redirect(config('user.logout_redirect', '/'));
     }
 
     /**
@@ -134,6 +134,6 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $this->clearLoginAttempts($request);
 
-        return redirect()->intended('/');
+        return redirect()->intended(config('user.login_redirect', '/'));
     }
 }
