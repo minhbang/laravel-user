@@ -67,7 +67,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     protected $presenter = Presenter::class;
     protected $table = 'users';
     protected $table_group = 'user_groups';
-    protected $fillable = ['name', 'username', 'email', 'password', 'group_id', 'roles'];
+    protected $fillable = ['name', 'username', 'email', 'password', 'group_id'];
     protected $hidden = ['password', 'remember_token'];
 
 
