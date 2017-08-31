@@ -1,4 +1,5 @@
 <?php
+
 namespace Minhbang\User;
 
 use Minhbang\Kit\Traits\Presenter\DatetimePresenter;
@@ -19,6 +20,18 @@ class Presenter extends BasePresenter
      */
     public function roles()
     {
-        return '<code>' . implode('</code><code>', Authority::user($this->entity)->roleTitles()) . '</code>';
+        return '<code>'.implode('</code><code>', Authority::user($this->entity)->roleTitles()).'</code>';
+    }
+
+    /**
+     * @param string $attribute
+     * @return string
+     */
+    public function group($attribute = 'full_name')
+    {
+        /** @var \Minhbang\User\Group $group */
+        $group = $this->entity->group;
+
+        return $group ? $group->{$attribute} : null;
     }
 }
