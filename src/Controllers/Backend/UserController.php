@@ -6,7 +6,7 @@ use Minhbang\Kit\Traits\Controller\QuickUpdateActions;
 use Minhbang\User\User;
 use UserManager;
 use Request;
-use Datatables;
+use DataTables;
 use Minhbang\User\Requests\UserRequest;
 use Minhbang\Kit\Extensions\DatatableBuilder as Builder;
 use Minhbang\User\UserTransformer;
@@ -125,7 +125,7 @@ class UserController extends BackendController
                 ->searchWhereBetween('users.updated_at', 'mb_date_vn2mysql');
         }
 
-        return Datatables::of($query)->setTransformer(new UserTransformer())->make(true);
+        return DataTables::of($query)->setTransformer(new UserTransformer())->make(true);
     }
 
 
