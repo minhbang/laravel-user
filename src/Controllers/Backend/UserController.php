@@ -1,15 +1,17 @@
 <?php
+
 namespace Minhbang\User\Controllers\Backend;
 
-use Minhbang\Kit\Extensions\BackendController;
-use Minhbang\Kit\Traits\Controller\QuickUpdateActions;
-use Minhbang\User\User;
-use UserManager;
-use Request;
 use Datatables;
-use Minhbang\User\Requests\UserRequest;
+use Illuminate\Http\Request;
+use Minhbang\Kit\Extensions\BackendController;
 use Minhbang\Kit\Extensions\DatatableBuilder as Builder;
+use Minhbang\Kit\Traits\Controller\CheckDatatablesInput;
+use Minhbang\Kit\Traits\Controller\QuickUpdateActions;
+use Minhbang\User\Requests\UserRequest;
+use Minhbang\User\User;
 use Minhbang\User\UserTransformer;
+use UserManager;
 
 /**
  * Class UserController
@@ -19,6 +21,7 @@ use Minhbang\User\UserTransformer;
 class UserController extends BackendController
 {
     use QuickUpdateActions;
+    use CheckDatatablesInput;
 
     /**
      * Quản lý user group
@@ -26,33 +29,11 @@ class UserController extends BackendController
      * @var \Minhbang\User\GroupManager
      */
     protected $manager;
+
     /**
      * @var string user group type hiện tại
      */
     protected $type;
-
-    /**
-     * @param null|string $type
-     */
-    protected function switchGroupType($type = null)
-    {
-        $this->type = $type ?: 'normal';
-        session(['backend.user.type' => $this->type]);
-    }
-
-    /**
-     * Lấy user group manager
-     *
-     * @return \Minhbang\User\GroupManager
-     */
-    protected function manager()
-    {
-        if (!$this->manager) {
-            $this->manager = UserManager::groups(session('backend.user.type', 'normal'));
-        }
-
-        return $this->manager;
-    }
 
     /**
      * @param \Minhbang\Kit\Extensions\DatatableBuilder $builder
@@ -74,7 +55,7 @@ class UserController extends BackendController
         }
 
         $this->buildHeading(
-            [trans('user::user.manage') . ":", $typeName],
+            [trans('user::user.manage').":", $typeName],
             'fa-users',
             ['#' => trans('user::user.user')],
             $buttons
@@ -84,23 +65,23 @@ class UserController extends BackendController
         $html = $builder->columns([
             ['data' => 'id', 'name' => 'id', 'title' => 'ID', 'class' => 'min-width text-center'],
             [
-                'data'  => 'username',
-                'name'  => 'username',
+                'data' => 'username',
+                'name' => 'username',
                 'title' => trans('user::user.username'),
                 'class' => 'min-width',
             ],
             ['data' => 'name', 'name' => 'name', 'title' => trans('user::user.name')],
             ['data' => 'email', 'name' => 'email', 'title' => trans('user::user.email')],
             [
-                'data'       => 'roles',
-                'name'       => 'roles',
-                'title'      => trans('authority::common.roles'),
+                'data' => 'roles',
+                'name' => 'roles',
+                'title' => trans('authority::common.roles'),
                 'searchable' => false,
-                'orderable'  => false,
+                'orderable' => false,
             ],
         ])->addAction([
-            'data'  => 'actions',
-            'name'  => 'actions',
+            'data' => 'actions',
+            'name' => 'actions',
             'title' => trans('common.actions'),
             'class' => 'min-width',
         ]);
@@ -109,17 +90,18 @@ class UserController extends BackendController
     }
 
     /**
+     * @param \Illuminate\Http\Request $request
      * @param string $type
-     *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function data($type)
+    public function data(Request $request, $type)
     {
+        $this->filterDatatablesParametersOrAbort($request);
         $this->switchGroupType($type);
         /** @var User $query */
         $query = User::inGroup($this->manager()->typeRoot())->adminFirst();
 
-        if (Request::has('filter_form')) {
+        if ($request->has('filter_form')) {
             $query = $query
                 ->searchWhereBetween('users.created_at', 'mb_date_vn2mysql')
                 ->searchWhereBetween('users.updated_at', 'mb_date_vn2mysql');
@@ -127,7 +109,6 @@ class UserController extends BackendController
 
         return Datatables::of($query)->setTransformer(new UserTransformer())->make(true);
     }
-
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -143,7 +124,7 @@ class UserController extends BackendController
             'plus-sign',
             [
                 route('backend.user.index') => trans('user::user.user'),
-                '#'                         => trans('common.create'),
+                '#' => trans('common.create'),
             ]
         );
 
@@ -164,14 +145,13 @@ class UserController extends BackendController
         return view(
             'kit::_modal_script',
             [
-                'message'     => [
-                    'type'    => 'success',
+                'message' => [
+                    'type' => 'success',
                     'content' => trans('common.create_object_success', ['name' => trans('user::user.user')]),
                 ],
                 'reloadTable' => 'user-manage',
             ]
         );
-
     }
 
     /**
@@ -201,7 +181,7 @@ class UserController extends BackendController
             'edit',
             [
                 route('backend.user.index') => trans('user::user.user'),
-                '#'                         => trans('common.edit'),
+                '#' => trans('common.edit'),
             ]
         );
 
@@ -223,8 +203,8 @@ class UserController extends BackendController
         return view(
             'kit::_modal_script',
             [
-                'message'     => [
-                    'type'    => 'success',
+                'message' => [
+                    'type' => 'success',
                     'content' => trans('common.update_object_success', ['name' => trans('user::user.user')]),
                 ],
                 'reloadTable' => 'user-manage',
@@ -244,7 +224,7 @@ class UserController extends BackendController
 
         return response()->json(
             [
-                'type'    => 'success',
+                'type' => 'success',
                 'content' => trans('common.delete_object_success', ['name' => trans('user::user.user')]),
             ]
         );
@@ -264,6 +244,29 @@ class UserController extends BackendController
     }
 
     /**
+     * @param null|string $type
+     */
+    protected function switchGroupType($type = null)
+    {
+        $this->type = $type ?: 'normal';
+        session(['backend.user.type' => $this->type]);
+    }
+
+    /**
+     * Lấy user group manager
+     *
+     * @return \Minhbang\User\GroupManager
+     */
+    protected function manager()
+    {
+        if (! $this->manager) {
+            $this->manager = UserManager::groups(session('backend.user.type', 'normal'));
+        }
+
+        return $this->manager;
+    }
+
+    /**
      * Kiểm tra không được update thông tin của chính mình
      *
      * @param \Minhbang\User\User $user
@@ -275,7 +278,7 @@ class UserController extends BackendController
             if ($ajax) {
                 die(json_encode(
                     [
-                        'type'    => 'error',
+                        'type' => 'error',
                         'content' => trans('user::user.not_self_update'),
                     ]
                 ));
@@ -297,8 +300,8 @@ class UserController extends BackendController
                 'rules' => 'required|min:4|max:20|alpha_dash|unique:users,username,__ID__',
                 'label' => trans('user::user.username'),
             ],
-            'name'     => ['rules' => 'required|min:4', 'label' => trans('user::user.name')],
-            'email'    => ['rules' => 'required|email|unique:users,email,__ID__', 'label' => trans('user::user.email')],
+            'name' => ['rules' => 'required|min:4', 'label' => trans('user::user.name')],
+            'email' => ['rules' => 'required|email|unique:users,email,__ID__', 'label' => trans('user::user.email')],
         ];
     }
 
