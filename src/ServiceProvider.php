@@ -28,7 +28,6 @@ class ServiceProvider extends BaseServiceProvider
         $this->loadTranslationsFrom(__DIR__ . '/../lang', 'user');
         $this->loadViewsFrom(__DIR__ . '/../views', 'user');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
-        $this->loadRoutesFrom(__DIR__ . '/routes.php');
 
         $this->publishes(
             [
@@ -44,6 +43,7 @@ class ServiceProvider extends BaseServiceProvider
         // model bindings
         $router->model('user', 'Minhbang\User\User');
         $router->model('user_group', 'Minhbang\User\Group');
+        $this->loadRoutesFrom(__DIR__ . '/routes.php');
 
         // Validator rule kiểm tra password hiện tại
         $this->app['validator']->extend(
