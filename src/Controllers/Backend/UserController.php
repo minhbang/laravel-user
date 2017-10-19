@@ -1,6 +1,4 @@
-<?php
-
-namespace Minhbang\User\Controllers\Backend;
+<?php namespace Minhbang\User\Controllers\Backend;
 
 use DataTables;
 use Illuminate\Http\Request;
