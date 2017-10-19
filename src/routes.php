@@ -57,22 +57,5 @@ Route::group(
             );
             Route::resource('user_group', 'GroupController');
         });
-        // Role Manage
-        Route::group(
-            ['prefix' => 'role', 'as' => 'role.', 'middleware' => config('user.middlewares.role')],
-            function () {
-                Route::get('/', ['as' => 'index', 'uses' => 'RoleController@index']);
-                Route::get('{role}', ['as' => 'show', 'uses' => 'RoleController@show']);
-                // Link User
-                Route::group(
-                    ['prefix' => '{role}/user', 'as' => 'user.'],
-                    function () {
-                        Route::post('{user}', ['as' => 'attach', 'uses' => 'RoleController@attachUser']);
-                        Route::delete('{user}', ['as' => 'detach', 'uses' => 'RoleController@detachUser']);
-                        Route::delete('/', ['as' => 'detach_all', 'uses' => 'RoleController@detachAllUser']);
-                    }
-                );
-            }
-        );
     }
 );
