@@ -8,7 +8,7 @@ return [
     'update_password_hint' => 'Để trống nếu không muốn thay đổi mật khẩu',
     'users'                => 'Nhân sự',
     'user'                 => 'User',
-    'group_id'             => 'Đơn vị',
+    'group_id'             => 'Group',
     'email'                => 'E-mail',
     'name'                 => 'Họ & Tên',
     'username'             => 'Tên đăng nhập',
