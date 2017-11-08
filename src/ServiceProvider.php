@@ -5,7 +5,6 @@ namespace Minhbang\User;
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
-use MenuManager;
 use Authority;
 use Kit;
 
@@ -55,8 +54,9 @@ class ServiceProvider extends BaseServiceProvider
             }
         );
 
-        // Add user menus
-        MenuManager::addItems(config('user.menus'));
+        if(app()->isAlias('menu-manager')){
+            app('menu-manager')->addItems(config('user.menus'));
+        }
         Authority::permission()->registerCRUD(User::class);
         Kit::title(User::class, trans('user::user.users'));
     }
