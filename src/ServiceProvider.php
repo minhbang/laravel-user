@@ -54,7 +54,7 @@ class ServiceProvider extends BaseServiceProvider
             }
         );
 
-        if(app()->getAlias('menu-manager')){
+        if($this->app->has('menu-manager')){
             app('menu-manager')->addItems(config('user.menus'));
         }
         Authority::permission()->registerCRUD(User::class);
