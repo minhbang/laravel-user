@@ -293,7 +293,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function storage_path($path = '')
     {
         abort_unless($this->exists, 500, "Not call storage_path() for Guest");
-        $path = config('app.paths.storage') . "/{$this->username}" . ($path ? "/$path" : '');
+        $path = data_path("{$this->username}" . ($path ? "/$path" : ''));
 
         return check_path($path, false, $path);
     }
@@ -301,7 +301,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * Lấy thư mục upload (tương đối/tuyệt đối) của user
      * - Tương đối luôn luôn: /upload/<user code>/$path
-     * - Tuyệt đối config('app.paths.upload') .'/' . $path
+     * - Tuyệt đối upload_path() .'/' . $path
      *
      * @param string $path
      * @param bool $full
@@ -311,7 +311,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     function upload_path($path = '', $full = false)
     {
         abort_unless($this->exists, 500, "Not call public_path() for Guest");
-        $path = ($full ? config('app.paths.upload') : '/upload') . "/{$this->code}" . ($path ? "/$path" : '');
+        $path = ($full ? upload_path() : '/upload') . "/{$this->code}" . ($path ? "/$path" : '');
 
         return $full ? check_path($path, false, $path) : $path;
     }
