@@ -1,5 +1,5 @@
 <?php
-namespace Minhbang\User\Seeders;
+namespace Minhbang\User\Tests\Stubs\Seeders;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Minhbang\User\User;
 use Minhbang\User\Group;

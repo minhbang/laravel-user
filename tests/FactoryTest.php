@@ -1,13 +1,13 @@
-<?php
+<?php namespace Minhbang\User\Tests;
+
+use Minhbang\User\Tests\Stubs\TestCase;
 use Minhbang\User\User;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 /**
  * Class FactoryTest
  */
 class FactoryTest extends TestCase
 {
-    use DatabaseMigrations;
     /**
      * @var array
      */
@@ -17,8 +17,21 @@ class FactoryTest extends TestCase
     {
         parent::setUp();
         $this->users['user'] = factory(User::class)->create();
-        $this->users['admin'] = factory(User::class, 'sys.admin')->create();
-        $this->users['super_admin'] = factory(User::class, 'sys.sadmin')->create();
+        $this->users['admin'] = factory(User::class)->create();
+        $this->users['super_admin'] = factory(User::class)->create(['username' => 'admin']);
+        app('db')->table('role_user')->insert([
+            [
+                'user_id' => $this->users['admin']->id,
+                'role_group' => 'sys',
+                'role_name' => 'admin',
+            ],
+            [
+                'user_id' => $this->users['super_admin']->id,
+                'role_group' => 'sys',
+                'role_name' => 'sadmin',
+            ],
+        ]);
+
     }
 
     public function testCreateUser()
@@ -28,15 +41,15 @@ class FactoryTest extends TestCase
 
     public function testSaveUser()
     {
-        $this->seeInDatabase('users', ['username' => $this->users['user']->username]);
+        $this->assertDatabaseHas('users', ['username' => $this->users['user']->username]);
     }
 
     public function testAttachRole()
     {
-        $this->seeInDatabase('role_user', [
-            'user_id'    => $this->users['admin']->id,
+        $this->assertDatabaseHas('role_user', [
+            'user_id' => $this->users['admin']->id,
             'role_group' => 'sys',
-            'role_name'  => 'admin',
+            'role_name' => 'admin',
         ]);
     }
 }

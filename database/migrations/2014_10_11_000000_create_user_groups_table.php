@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
 class CreateUserGroupsTable extends Migration
 {
@@ -22,8 +22,6 @@ class CreateUserGroupsTable extends Migration
             // Mormal attributes
             $table->string('system_name', 128)->unique();
             $table->string('full_name', 128);
-            $table->string('short_name', 60);
-            $table->string('acronym_name', 20);
         });
     }
 

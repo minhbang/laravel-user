@@ -2,6 +2,10 @@
 return [
     'login_redirect' => '/',
     'logout_redirect' => '/',
+    'group_meta' => [
+        'short_name' => 'required|max:60',
+        'acronym_name' => 'required|max:20',
+    ],
     'group_types' => [
         'system', // group hệ thống: administrator, test...
         'normal', // các group thông thường ~ đơn vị

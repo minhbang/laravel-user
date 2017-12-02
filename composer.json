@@ -15,13 +15,35 @@
             "role": "Developer"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/minhbang/laravel-authority.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://gitlab.com/minhbang/laravel-kit.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://gitlab.com/minhbang/laravel-meta.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/minhbang/laravel-setting.git"
+        }
+    ],
     "require": {
-        "php": ">=7.0.0"
+        "php": ">=7.0",
+        "minhbang/laravel-kit": "dev-master",
+        "minhbang/laravel-authority": "dev-master",
+        "minhbang/laravel-meta": "dev-master"
     },
     "require-dev": {
-        "fzaninotto/faker": "~1.4",
-        "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~6.0"
+        "orchestra/testbench": "~3.5",
+        "orchestra/database": "~3.5",
+        "nunomaduro/collision": "^1.1",
+        "minhbang/laravel-setting": "dev-master"
     },
     "autoload": {
         "psr-4": {
@@ -33,7 +55,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Minhbang\\User\\Test\\": "tests/"
+            "Minhbang\\User\\Tests\\": "tests/"
         }
     },
     "extra": {

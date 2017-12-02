@@ -1,4 +1,5 @@
 <?php
+
 namespace Minhbang\User\Requests;
 
 use Minhbang\Kit\Extensions\Request;
@@ -13,10 +14,8 @@ class GroupRequest extends Request
 {
     public $trans_prefix = 'user::group';
     public $rules = [
-        'system_name'  => 'required|max:128|alpha_dash|unique:user_groups',
-        'full_name'    => 'required|max:128',
-        'short_name'   => 'required|max:60',
-        'acronym_name' => 'required|max:20',
+        'system_name' => 'required|max:128|alpha_dash|unique:user_groups',
+        'full_name' => 'required|max:128',
     ];
 
     /**
@@ -36,6 +35,8 @@ class GroupRequest extends Request
      */
     public function rules()
     {
+        $this->rules += config('user.group_meta');
+
         if ($this->user_group) {
             //update Group
             $this->rules['system_name'] .= ',system_name,' . $this->user_group->id;

@@ -1,9 +1,11 @@
 <?php
+
 namespace Minhbang\User;
 
 use Laracasts\Presenter\PresentableTrait;
-use Minhbang\Kit\Extensions\NestedSetModel;
 use Minhbang\Category\Category;
+use Minhbang\Kit\Extensions\NestedSetModel;
+use Minhbang\Meta\Metable;
 use UserManager;
 
 /**
@@ -45,11 +47,22 @@ use UserManager;
  */
 class Group extends NestedSetModel
 {
+    use Metable;
     use PresentableTrait;
+    public $timestamps = false;
     protected $table = 'user_groups';
     protected $presenter = GroupPresenter::class;
-    protected $fillable = ['system_name', 'full_name', 'short_name', 'acronym_name'];
-    public $timestamps = false;
+    protected $fillable = ['system_name', 'full_name'];
+
+    /**
+     * @param string $system_name
+     *
+     * @return static|null
+     */
+    public static function findBySystemName($system_name)
+    {
+        return static::systemName($system_name)->first();
+    }
 
     /**
      * Users trực tiếp ($immediate) hay tòan bộ (bao gồm các group con)
@@ -123,16 +136,6 @@ class Group extends NestedSetModel
     }
 
     /**
-     * @param string $system_name
-     *
-     * @return static|null
-     */
-    public static function findBySystemName($system_name)
-    {
-        return static::systemName($system_name)->first();
-    }
-
-    /**
      * Là cơ quan quản lý của danh mục $category
      * - Được giao quản lý danh mục cha (root1, depth = 1) của $category
      *
@@ -150,5 +153,10 @@ class Group extends NestedSetModel
         } else {
             return false;
         }
+    }
+
+    protected function metaAttributes()
+    {
+        return config('user.group_meta');
     }
 }

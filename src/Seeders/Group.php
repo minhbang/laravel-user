@@ -1,9 +1,8 @@
-<?php
-namespace Minhbang\User\Seeders;
+<?php namespace Minhbang\User\Seeders;
 
 use DB;
-use Minhbang\User\Group as Model;
 use Minhbang\Kit\Support\VnString;
+use Minhbang\User\Group as Model;
 
 /**
  * Class Group
@@ -13,6 +12,28 @@ use Minhbang\Kit\Support\VnString;
 class Group
 {
     /**
+     * Định dạng $data
+     * [
+     *      'group_type_1' => [
+     *              'Group Name 1' => [
+     *                  'meta' => ['meta_1' => meta_value_1,...]], // Nếu có
+     *                  'items' => [Group con nếu có]
+     *              ...
+     *      ],
+     *      ...
+     * ],
+     *
+     * @param array $data
+     */
+    public function seed($data = [])
+    {
+        DB::table('user_groups')->truncate();
+        foreach ($data as $type => $groups) {
+            $this->seedGroupItem($this->seedGroupRoot($type), $groups);
+        }
+    }
+
+    /**
      * @param string $name
      *
      * @return \Minhbang\User\Group
@@ -20,10 +41,8 @@ class Group
     protected function seedGroupRoot($name = '')
     {
         return Model::firstOrCreate([
-            'system_name'  => $name,
-            'full_name'    => $name,
-            'short_name'   => $name,
-            'acronym_name' => $name,
+            'system_name' => $name,
+            'full_name' => $name,
         ]);
     }
 
@@ -34,27 +53,20 @@ class Group
     protected function seedGroupItem($root, $items = [])
     {
         foreach ($items as $name => $item) {
-            $group = Model::create([
-                'system_name'  => VnString::to_slug($name),
-                'full_name'    => $name,
-                'short_name'   => $item[0],
-                'acronym_name' => $item[1],
-            ]);
-            $group->makeChildOf($root);
-            if (isset($item[2]) && is_array($item[2])) {
-                $this->seedGroupItem($group, $item[2]);
+            $attributes = [
+                'system_name' => VnString::to_slug($name),
+                'full_name' => $name,
+            ];
+            if (isset($item['meta'])) {
+                $attributes += $item['meta'];
             }
-        }
-    }
-
-    /**
-     * @param array $data
-     */
-    public function seed($data = [])
-    {
-        DB::table('user_groups')->truncate();
-        foreach ($data as $type => $groups) {
-            $this->seedGroupItem($this->seedGroupRoot($type), $groups);
+            $group = new Model();
+            $group->fill($attributes);
+            $group->save();
+            $group->makeChildOf($root);
+            if (isset($item['items']) && is_array($item['items'])) {
+                $this->seedGroupItem($group, $item['items']);
+            }
         }
     }
 }
