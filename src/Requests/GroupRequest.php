@@ -35,7 +35,7 @@ class GroupRequest extends Request
      */
     public function rules()
     {
-        $this->rules += config('user.group_meta');
+        $this->rules += config('user.group_meta.attributes');
 
         if ($this->user_group) {
             //update Group

@@ -154,6 +154,6 @@ class Group extends NestedSetModel
 
     protected function metaAttributes()
     {
-        return config('user.group_meta');
+        return config('user.group_meta.attributes');
     }
 }

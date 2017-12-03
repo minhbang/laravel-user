@@ -35,7 +35,7 @@ class GroupTest extends TestCase
 
     public function test_Group_Meta_Data()
     {
-        config(['user.group_meta' => [
+        config(['user.group_meta.attributes' => [
             'extra1' => '',
             'extra2' => '',
         ]]);
