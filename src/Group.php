@@ -18,8 +18,6 @@ use UserManager;
  * @property integer $depth
  * @property string $system_name
  * @property string $full_name
- * @property string $short_name
- * @property string $acronym_name
  * @property-read string $type
  * @property-read string $type_name
  * @property-read \Minhbang\User\Group $parent
@@ -33,8 +31,6 @@ use UserManager;
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereDepth($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereSystemName($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereFullName($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereShortName($value)
- * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereAcronymName($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereType($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group wherePriority($value)
  * @method static \Illuminate\Database\Query\Builder|\Minhbang\User\Group whereCreatedAt($value)
@@ -44,6 +40,7 @@ use UserManager;
  * @method static \Illuminate\Database\Query\Builder|\Baum\Node withoutSelf()
  * @method static \Illuminate\Database\Query\Builder|\Baum\Node withoutRoot()
  * @method static \Illuminate\Database\Query\Builder|\Baum\Node limitDepth($limit)
+ * @mixin \Illuminate\Database\Eloquent\Model
  */
 class Group extends NestedSetModel
 {

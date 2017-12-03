@@ -14,16 +14,10 @@
             <td><strong>{{$group->full_name}}</strong></td>
         </tr>
         <tr>
-            <td>{{ trans('user::group.short_name') }}</td>
-            <td><strong>{{$group->short_name}}</strong></td>
-        </tr>
-        <tr>
-            <td>{{ trans('user::group.acronym_name') }}</td>
-            <td><strong>{{$group->acronym_name}}</strong></td>
-        </tr>
-        <tr>
             <td>{{ trans('user::group.system_name') }}</td>
             <td><strong>{{$group->system_name}}</strong></td>
         </tr>
+        <tr><td colspan="2"><strong class="text-warning">{{trans('user::group.meta')}}</strong></td></tr>
+        @include(config('user.group_meta.show'))
     </table>
 @stop

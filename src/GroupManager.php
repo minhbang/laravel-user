@@ -38,8 +38,6 @@ class GroupManager
         $this->_type_root = Group::firstOrCreate([
             'system_name'  => $type,
             'full_name'    => $type,
-            'short_name'   => $type,
-            'acronym_name' => $type,
         ]);
     }
 

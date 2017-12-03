@@ -19,7 +19,7 @@ class FactoryTest extends TestCase
         $this->users['user'] = factory(User::class)->create();
         $this->users['admin'] = factory(User::class)->create();
         $this->users['super_admin'] = factory(User::class)->create(['username' => 'admin']);
-        app('db')->table('role_user')->insert([
+        $this->app['db']->table('role_user')->insert([
             [
                 'user_id' => $this->users['admin']->id,
                 'role_group' => 'sys',

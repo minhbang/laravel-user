@@ -7,7 +7,9 @@
                class="modal-link btn btn-success btn-xs"
                data-title="{{trans('common.create_object', ['name' => trans('user::group.group')])}}"
                data-label="{{trans('common.save')}}"
-               data-icon="align-justify">
+               data-icon="align-justify"
+               data-width="large"
+            >
                 <span class="glyphicon glyphicon-plus-sign"></span> {{trans('user::group.create_group')}}
             </a>
             <a href="#" data-action="collapseAll" class="nestable_action btn btn-default btn-xs">

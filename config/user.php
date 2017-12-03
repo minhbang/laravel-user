@@ -3,8 +3,12 @@ return [
     'login_redirect' => '/',
     'logout_redirect' => '/',
     'group_meta' => [
-        'short_name' => 'required|max:60',
-        'acronym_name' => 'required|max:20',
+        'attributes' => [
+            'short_name' => 'required|max:60',
+            'acronym_name' => 'required|max:20',
+        ],
+        'form' => 'user::group._meta_form',
+        'show' => 'user::group._meta_show',
     ],
     'group_types' => [
         'system', // group hệ thống: administrator, test...

@@ -37,14 +37,5 @@ class TestCase extends \Minhbang\Kit\Testing\TestCase
         $app->bind('path.public', function () {
             return __DIR__ . '/public';
         });
-        $app['config']->set('filesystems.disks.data', [
-            'driver' => 'local',
-            'root' => __DIR__ . '/data',
-        ]);
-        $app['config']->set('filesystems.disks.upload', [
-            'driver' => 'local',
-            'root' => __DIR__ . '/public/upload',
-        ]);
     }
-
 }

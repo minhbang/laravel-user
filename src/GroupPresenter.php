@@ -34,6 +34,7 @@ class GroupPresenter extends Presenter
                data-toggle="tooltip"
                data-title="' . trans('common.create_child_object', ['name' => $name]) . '"
                data-label="' . trans('common.save') . '"
+               data-width="large"
                data-icon="align-justify"><span class="glyphicon glyphicon-plus"></span>
             </a>';
         } else {
@@ -55,6 +56,7 @@ class GroupPresenter extends Presenter
            class="modal-link btn btn-info btn-xs"
            data-title="' . trans('common.update_object', ['name' => $name]) . '"
            data-label="' . trans('common.save_changes') . '"
+           data-width="large"
            data-icon="align-justify"><span class="glyphicon glyphicon-edit"></span>
         </a>';
         $delete = '<a href="#"

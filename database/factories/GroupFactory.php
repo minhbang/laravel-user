@@ -1,7 +1,7 @@
 <?php
 
-use Minhbang\User\Group;
 use Faker\Generator;
+use Minhbang\User\Group;
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(Group::class, function (Generator $faker) {
@@ -10,8 +10,6 @@ $factory->define(Group::class, function (Generator $faker) {
     return [
         'system_name' => $name,
         'full_name' => $name,
-        'short_name' => $name,
-        'acronym_name' => $name,
     ];
 });
 
