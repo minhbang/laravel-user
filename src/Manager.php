@@ -40,7 +40,7 @@ class Manager
     public function __construct($group_types = ['system', 'normal'], $group_max_depth = 5)
     {
         foreach ($group_types as $type) {
-            $this->group_types[$type] = trans("user::group.type_{$type}");
+            $this->group_types[$type] = __("user::group.type_{$type}");
         }
         $this->group_max_depth = $group_max_depth;
     }
@@ -56,7 +56,7 @@ class Manager
     {
         $type = $type ?: 'normal';
         if (!isset($this->group_types[$type])) {
-            abort(500, trans('user::group.invalid_group_type'));
+            abort(500, __('Invalid Group type!'));
         }
         if (!isset($this->group_managers[$type])) {
             $this->group_managers[$type] = new GroupManager($type, $this->group_max_depth);

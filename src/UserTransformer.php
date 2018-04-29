@@ -28,7 +28,7 @@ class UserTransformer extends ModelTransformer
                 'backend.user',
                 ['user' => $user->id],
                 "{$user->name} ({$user->username})",
-                trans('user::user.user'),
+                __('User'),
                 [
                     //'renderEdit' => 'link',
                     //'renderShow' => 'modal-large',
@@ -48,7 +48,7 @@ class UserTransformer extends ModelTransformer
     {
         $default = [
             'attr'  => $attribute,
-            'title' => trans("user::user.{$attribute}"),
+            'title' => __("user::user.{$attribute}"),
             'class' => 'w-md',
         ];
         $color = mb_array_extract('color', $options, 'danger');

@@ -53,9 +53,9 @@ class UserController extends BackendController
         }
 
         $this->buildHeading(
-            [trans('user::user.manage').":", $typeName],
+            [__('Manage User').":", $typeName],
             'fa-users',
-            ['#' => trans('user::user.user')],
+            ['#' => __('User')],
             $buttons
         );
 
@@ -65,22 +65,22 @@ class UserController extends BackendController
             [
                 'data' => 'username',
                 'name' => 'username',
-                'title' => trans('user::user.username'),
+                'title' => __('Username'),
                 'class' => 'min-width',
             ],
-            ['data' => 'name', 'name' => 'name', 'title' => trans('user::user.name')],
-            ['data' => 'email', 'name' => 'email', 'title' => trans('user::user.email')],
+            ['data' => 'name', 'name' => 'name', 'title' => __('Fullname')],
+            ['data' => 'email', 'name' => 'email', 'title' => __('E-mail')],
             [
                 'data' => 'roles',
                 'name' => 'roles',
-                'title' => trans('authority::common.roles'),
+                'title' => __('Roles'),
                 'searchable' => false,
                 'orderable' => false,
             ],
         ])->addAction([
             'data' => 'actions',
             'name' => 'actions',
-            'title' => trans('common.actions'),
+            'title' => __('Actions'),
             'class' => 'min-width',
         ]);
 
@@ -118,11 +118,11 @@ class UserController extends BackendController
         $method = 'post';
         $groups = $this->manager()->selectize();
         $this->buildHeading(
-            trans('common.create_object', ['name' => trans('user::user.user')]),
+            __('Create new :name', ['name' => __('User')]),
             'plus-sign',
             [
-                route('backend.user.index') => trans('user::user.user'),
-                '#' => trans('common.create'),
+                route('backend.user.index') => __('User'),
+                '#' => __('Create'),
             ]
         );
 
@@ -145,7 +145,7 @@ class UserController extends BackendController
             [
                 'message' => [
                     'type' => 'success',
-                    'content' => trans('common.create_object_success', ['name' => trans('user::user.user')]),
+                    'content' => __('Create new <strong>:name</strong> success', ['name' => __('User')]),
                 ],
                 'reloadTable' => 'user-manage',
             ]
@@ -175,11 +175,11 @@ class UserController extends BackendController
         $method = 'put';
         $groups = $this->manager()->selectize();
         $this->buildHeading(
-            trans('common.update_object', ['name' => trans('user::user.user')]),
+            __('Update :name', ['name' => __('User')]),
             'edit',
             [
-                route('backend.user.index') => trans('user::user.user'),
-                '#' => trans('common.edit'),
+                route('backend.user.index') => __('User'),
+                '#' => __('Edit'),
             ]
         );
 
@@ -203,7 +203,7 @@ class UserController extends BackendController
             [
                 'message' => [
                     'type' => 'success',
-                    'content' => trans('common.update_object_success', ['name' => trans('user::user.user')]),
+                    'content' => __('Update <strong>:name</strong> success', ['name' => __('User')]),
                 ],
                 'reloadTable' => 'user-manage',
             ]
@@ -223,7 +223,7 @@ class UserController extends BackendController
         return response()->json(
             [
                 'type' => 'success',
-                'content' => trans('common.delete_object_success', ['name' => trans('user::user.user')]),
+                'content' => __('Delete <strong>:name</strong> success', ['name' => __('User')]),
             ]
         );
     }
@@ -277,11 +277,11 @@ class UserController extends BackendController
                 die(json_encode(
                     [
                         'type' => 'error',
-                        'content' => trans('user::user.not_self_update'),
+                        'content' => __('user::user.not_self_update'),
                     ]
                 ));
             } else {
-                abort(403, trans('user::user.not_self_update'));
+                abort(403, __('user::user.not_self_update'));
             }
         }
     }
@@ -296,10 +296,10 @@ class UserController extends BackendController
         return [
             'username' => [
                 'rules' => 'required|min:4|max:20|alpha_dash|unique:users,username,__ID__',
-                'label' => trans('user::user.username'),
+                'label' => __('Username'),
             ],
-            'name' => ['rules' => 'required|min:4', 'label' => trans('user::user.name')],
-            'email' => ['rules' => 'required|email|unique:users,email,__ID__', 'label' => trans('user::user.email')],
+            'name' => ['rules' => 'required|min:4', 'label' => __('Fullname')],
+            'email' => ['rules' => 'required|email|unique:users,email,__ID__', 'label' => __('E-mail')],
         ];
     }
 

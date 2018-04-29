@@ -1,6 +1,6 @@
 @extends('kit::backend.layouts.basic')
 
-@section('heading', trans('user::account.update_profile'))
+@section('heading', __('Change personal information'))
 
 @section('classes', 'col-md-6 col-md-offset-3')
 
@@ -8,13 +8,13 @@
     {!! Form::model($account, ['class' => 'form-horizontal']) !!}
     <div class="hr-line-solid"></div>
     <div class="form-group">
-        <label class="col-md-4 control-label">{{ trans('user::user.username') }}</label>
+        <label class="col-md-4 control-label">{{ __('Username') }}</label>
         <div class="col-md-6">
             <div class="text-primary form-control">{{ $account->username }}</div>
         </div>
     </div>
     <div class="form-group{{ $errors->has('name') ? ' has-error':'' }}">
-        {!! Form::label('name', trans('user::user.name'), ['class' => 'col-md-4 control-label']) !!}
+        {!! Form::label('name', __('Fullname'), ['class' => 'col-md-4 control-label']) !!}
         <div class="col-md-6">
             {!! Form::text('name', null, ['class' => 'form-control']) !!}
             @if($errors->has('name'))
@@ -23,7 +23,7 @@
         </div>
     </div>
     <div class="form-group{{ $errors->has('email') ? ' has-error':'' }}">
-        {!! Form::label('email', trans('user::user.email'), ['class' => 'col-md-4 control-label']) !!}
+        {!! Form::label('email', __('E-mail'), ['class' => 'col-md-4 control-label']) !!}
         <div class="col-md-6">
             {!! Form::text('email', null, ['class' => 'form-control']) !!}
             @if($errors->has('email'))
@@ -35,8 +35,8 @@
     <div class="form-group">
         <div class="col-md-6 col-md-offset-4">
             <button type="submit" class="btn btn-success"
-                    style="margin-right: 15px;">{{ trans('common.save') }}</button>
-            <a href="{{ URL::previous()}}">{{ trans('common.cancel') }}</a>
+                    style="margin-right: 15px;">{{ __('Save') }}</button>
+            <a href="{{ URL::previous()}}">{{ __('Cancel') }}</a>
         </div>
     </div>
     {!! Form::close() !!}

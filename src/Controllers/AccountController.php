@@ -51,7 +51,7 @@ class AccountController extends Controller
             'message',
             [
                 'type'    => 'success',
-                'content' => trans('user::account.change_password_success'),
+                'content' => __('Change password successfully.<br>Please login again!'),
             ]
         );
 
@@ -81,7 +81,7 @@ class AccountController extends Controller
             'message',
             [
                 'type'    => 'success',
-                'content' => trans('user::account.update_profile_success'),
+                'content' => __('Save changes personal information success!'),
             ]
         );
 

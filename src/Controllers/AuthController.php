@@ -95,7 +95,7 @@ class AuthController extends Controller
         $seconds = $this->limiter()->availableIn(
             $this->throttleKey($request)
         );
-        $message = trans('user::account.throttle', compact('seconds'));
+        $message = __('Too many login attempts. Please try again in :seconds seconds.', compact('seconds'));
 
         if ($request->expectsJson()) {
             return response()->json([$this->username() => $message], 423);
@@ -113,7 +113,7 @@ class AuthController extends Controller
      */
     protected function failedResponse(Request $request)
     {
-        $errors = trans('user::account.credentials_invalid');
+        $errors = __('Incorrect login information!');
 
         if ($request->expectsJson()) {
             return response()->json([$this->username() => $errors], 422);

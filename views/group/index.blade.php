@@ -5,12 +5,12 @@
             <div class="loading hidden"></div>
             <a href="{{route('backend.user_group.create')}}"
                class="modal-link btn btn-success btn-xs"
-               data-title="{{trans('common.create_object', ['name' => trans('user::group.group')])}}"
-               data-label="{{trans('common.save')}}"
+               data-title="{{__('Create new :name', ['name' => __('User group')])}}"
+               data-label="{{__('Save')}}"
                data-icon="align-justify"
                data-width="large"
             >
-                <span class="glyphicon glyphicon-plus-sign"></span> {{trans('user::group.create_group')}}
+                <span class="glyphicon glyphicon-plus-sign"></span> {{__('Create Group')}}
             </a>
             <a href="#" data-action="collapseAll" class="nestable_action btn btn-default btn-xs">
                 <span class="glyphicon glyphicon-circle-arrow-up"></span>
@@ -41,7 +41,7 @@
 
         </div>
         <div class="panel-footer">
-            <span class="glyphicon glyphicon-info-sign"></span> {{ trans('user::group.order_hint')}}
+            <span class="glyphicon glyphicon-info-sign"></span> {{ __('Drag / Drop Group to move to new location')}}
         </div>
     </div>
 @stop
@@ -57,7 +57,7 @@
             },
             max_depth:{{ $max_depth }},
             trans: {
-                name: '{{ trans('user::group.group') }}'
+                name: '{{ __('User group') }}'
             },
             csrf_token: window.Laravel.csrfToken
         });

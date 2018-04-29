@@ -6,31 +6,31 @@
             <td><strong>{{$user->id}}</strong></td>
         </tr>
         <tr>
-            <td>{{ trans('user::user.type') }}</td>
+            <td>{{ __('Typp') }}</td>
             <td class="text-navy"><strong>{{ $user->type_name }}</strong></td>
         </tr>
         <tr>
-            <td>{{ trans('user::user.username') }}</td>
+            <td>{{ __('Username') }}</td>
             <td><strong>{{ $user->username }}</strong></td>
         </tr>
         <tr>
-            <td>{{ trans('user::user.name') }}</td>
+            <td>{{ __('Fullname') }}</td>
             <td><strong>{{ $user->name }}</strong></td>
         </tr>
         <tr>
-            <td>{{ trans('user::user.email') }}</td>
+            <td>{{ __('E-mail') }}</td>
             <td><strong>{{ $user->email }}</strong></td>
         </tr>
         <tr>
-            <td>{{ trans('authority::common.roles') }}</td>
+            <td>{{ __('Roles') }}</td>
             <td>{!! $user->present()->roles !!}</td>
         </tr>
         <tr>
-            <td>{{ trans('common.created_at') }}</td>
+            <td>{{ __('Created at') }}</td>
             <td>{!! $user->present()->createdAt !!}</td>
         </tr>
         <tr>
-            <td>{{ trans('common.updated_at') }}</td>
+            <td>{{ __('Updated at') }}</td>
             <td>{!! $user->present()->updatedAt !!}</td>
         </tr>
     </table>

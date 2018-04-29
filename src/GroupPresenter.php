@@ -26,14 +26,14 @@ class GroupPresenter extends Presenter
      */
     public function actions($max_depth)
     {
-        $name = trans('user::group.group');
+        $name = __('User group');
 
         if ($this->entity->depth < $max_depth) {
             $child = '<a href="' . url("backend/user_group/{$this->entity->id}/create") . '"
                class="modal-link btn btn-primary btn-xs"
                data-toggle="tooltip"
-               data-title="' . trans('common.create_child_object', ['name' => $name]) . '"
-               data-label="' . trans('common.save') . '"
+               data-title="' . __('Create child :name', ['name' => $name]) . '"
+               data-label="' . __('Save') . '"
                data-width="large"
                data-icon="align-justify"><span class="glyphicon glyphicon-plus"></span>
             </a>';
@@ -41,27 +41,27 @@ class GroupPresenter extends Presenter
             $child = '<a href="#"
                class="btn btn-primary btn-xs disabled"
                data-toggle="tooltip"
-               data-title="' . trans('common.create_child_object', ['name' => $name]) . '">
+               data-title="' . __('Create child :name', ['name' => $name]) . '">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>';
         }
         $show = '<a href="' . url("backend/user_group/{$this->entity->id}") . '"
            data-toggle="tooltip"
            class="modal-link btn btn-success btn-xs"
-           data-title="' . trans('common.object_details_view', ['name' => $name]) . '"
+           data-title="' . __('Details of :name', ['name' => $name]) . '"
            data-icon="align-justify"><span class="glyphicon glyphicon-list"></span>
         </a>';
         $edit = '<a href="' . url("backend/user_group/{$this->entity->id}/edit") . '"
            data-toggle="tooltip"
            class="modal-link btn btn-info btn-xs"
-           data-title="' . trans('common.update_object', ['name' => $name]) . '"
-           data-label="' . trans('common.save_changes') . '"
+           data-title="' . __('Update :name', ['name' => $name]) . '"
+           data-label="' . __('Save Shanges') . '"
            data-width="large"
            data-icon="align-justify"><span class="glyphicon glyphicon-edit"></span>
         </a>';
         $delete = '<a href="#"
             data-toggle="tooltip"
-            data-title="' . trans('common.delete_object', ['name' => $name]) . '"
+            data-title="' . __('Delete :name', ['name' => $name]) . '"
             data-item_id="' . $this->entity->id . '"
             data-item_title="' . $this->entity->full_name . '"
             class="delete_item btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span>

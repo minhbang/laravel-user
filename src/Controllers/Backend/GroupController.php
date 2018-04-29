@@ -61,9 +61,9 @@ class GroupController extends BackendController
         $types = $this->manager()->typeNames();
         $current = $this->type;
         $this->buildHeading(
-            [trans('user::group.manage'), "[{$types[$current]}]"],
+            [__('Manage group'), "[{$types[$current]}]"],
             'fa-sitemap',
-            ['#' => trans('user::group.group')]
+            ['#' => __('User group')]
         );
 
         return view('user::group.index', compact('max_depth', 'nestable', 'types', 'current'));
@@ -157,7 +157,7 @@ class GroupController extends BackendController
             [
                 'message'    => [
                     'type'    => 'success',
-                    'content' => trans('common.create_object_success', ['name' => trans('user::group.group')]),
+                    'content' => __('Create new <strong>:name</strong> success', ['name' => __('User group')]),
                 ],
                 'reloadPage' => true,
             ]
@@ -211,7 +211,7 @@ class GroupController extends BackendController
             [
                 'message'    => [
                     'type'    => 'success',
-                    'content' => trans('common.update_object_success', ['name' => trans('user::group.group')]),
+                    'content' => __('Update <strong>:name</strong> success', ['name' => __('User group')]),
                 ],
                 'reloadPage' => true,
             ]
@@ -233,7 +233,7 @@ class GroupController extends BackendController
         return response()->json(
             [
                 'type'    => 'success',
-                'content' => trans('common.delete_object_success', ['name' => trans('user::group.group')]),
+                'content' => __('Delete <strong>:name</strong> success', ['name' => __('User group')]),
             ]
         );
     }
@@ -273,7 +273,7 @@ class GroupController extends BackendController
             return response()->json(
                 [
                     'type'    => 'success',
-                    'content' => trans('common.order_object_success', ['name' => trans('user::group.group')]),
+                    'content' => __('Update <strong>:name</strong> order success', ['name' => __('User group')]),
                 ]
             );
         } else {
@@ -310,7 +310,7 @@ class GroupController extends BackendController
         return die(json_encode(
             [
                 'type'    => 'error',
-                'content' => trans('user::group.not_found'),
+                'content' => __('Group not found!'),
             ]
         ));
     }

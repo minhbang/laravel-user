@@ -24,14 +24,14 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function boot(Router $router)
     {
-        $this->loadTranslationsFrom(__DIR__ . '/../lang', 'user');
+        //$this->loadTranslationsFrom(__DIR__ . '/../lang', 'user');
         $this->loadViewsFrom(__DIR__ . '/../views', 'user');
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
         $this->publishes(
             [
                 __DIR__ . '/../views'           => base_path('resources/views/vendor/user'),
-                __DIR__ . '/../lang'            => base_path('resources/lang/vendor/user'),
+                //__DIR__ . '/../lang'            => base_path('resources/lang/vendor/user'),
                 __DIR__ . '/../config/user.php' => config_path('user.php'),
             ]
         );
@@ -58,7 +58,7 @@ class ServiceProvider extends BaseServiceProvider
             app('menu-manager')->addItems(config('user.menus'));
         }
         Authority::permission()->registerCRUD(User::class);
-        Kit::title(User::class, trans('user::user.users'));
+        Kit::title(User::class, __('Users'));
     }
 
 

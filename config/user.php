@@ -29,14 +29,14 @@ return [
         'backend.sidebar.user.manager' => [
             'priority' => 1,
             'url' => 'route:backend.user.index',
-            'label' => 'trans:user::user.user',
+            'label' => '__:User',
             'icon' => 'fa-users',
             'active' => ['backend/user', 'backend/user/*'],
         ],
         'backend.sidebar.user.user_group' => [
             'priority' => 2,
             'url' => 'route:backend.user_group.index',
-            'label' => 'trans:user::group.group',
+            'label' => '__:User group',
             'icon' => 'fa-sitemap',
             'active' => 'backend/user_group*',
         ],

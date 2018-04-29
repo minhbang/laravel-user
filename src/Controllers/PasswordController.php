@@ -42,7 +42,7 @@ class PasswordController extends Controller
                 $message
             ) {
                 $message->subject(
-                    '[' . setting('website.name_short') . '] ' . trans('user::account.password_reset_link')
+                    '[' . setting('website.name_short') . '] ' . __('Password recovery link')
                 );
             }
         );
@@ -113,7 +113,7 @@ class PasswordController extends Controller
                     'message',
                     [
                         'type'    => 'success',
-                        'content' => trans('user::account.change_password_success'),
+                        'content' => __('Change password successfully.<br>Please login again!'),
                     ]
                 );
                 return redirect(route('auth.login'));

@@ -1,6 +1,6 @@
 @extends('kit::backend.layouts.basic')
 
-@section('heading', trans('user::account.update_password'))
+@section('heading', __('Change password'))
 
 @section('classes', 'col-md-6 col-md-offset-3')
 
@@ -8,7 +8,7 @@
     {!! Form::open(['class' => 'form-horizontal']) !!}
     <div class="hr-line-solid"></div>
     <div class="form-group{{ $errors->has('password_now') ? ' has-error':'' }}">
-        {!! Form::label('password_now', trans('user::account.password_now'), ['class' => 'col-md-4 control-label']) !!}
+        {!! Form::label('password_now', __('Old password'), ['class' => 'col-md-4 control-label']) !!}
         <div class="col-md-6">
             {!! Form::password('password_now', ['class' => 'form-control']) !!}
             @if($errors->has('password_now'))
@@ -17,7 +17,7 @@
         </div>
     </div>
     <div class="form-group{{ $errors->has('password') ? ' has-error':'' }}">
-        {!! Form::label('password', trans('user::account.password_new'), ['class' => 'col-md-4 control-label']) !!}
+        {!! Form::label('password', __('New password'), ['class' => 'col-md-4 control-label']) !!}
         <div class="col-md-6">
             {!! Form::password('password', ['class' => 'form-control']) !!}
             @if($errors->has('password'))
@@ -26,7 +26,7 @@
         </div>
     </div>
     <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error':'' }}">
-        {!! Form::label('password_confirmation', trans('user::account.password_confirmation'), ['class' => 'col-md-4 control-label']) !!}
+        {!! Form::label('password_confirmation', __('Password confirmation'), ['class' => 'col-md-4 control-label']) !!}
         <div class="col-md-6">
             {!! Form::password('password_confirmation', ['class' => 'form-control']) !!}
             @if($errors->has('password_confirmation'))
@@ -38,8 +38,8 @@
     <div class="form-group">
         <div class="col-md-6 col-md-offset-4">
             <button type="submit" class="btn btn-success"
-                    style="margin-right: 15px;">{{ trans('common.save') }}</button>
-            <a href="{{ URL::previous()}}">{{ trans('common.cancel') }}</a>
+                    style="margin-right: 15px;">{{ __('Save') }}</button>
+            <a href="{{ URL::previous()}}">{{ __('Cancel') }}</a>
         </div>
     </div>
     {!! Form::close() !!}

@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'change_password_success' => 'Change password successfully.<br>Please login again!',
+    'credentials_invalid' => 'Incorrect login information!',
+    'email_reset_password' => 'E-mail of the account',
+    'forgot_password' => 'Forgot password?',
+    'login' => 'Login',
+    'login_title' => 'Login information',
+    'logout' => 'Logout',
+    'password' => 'Password',
+    'password_confirmation' => 'Password confirmation',
+    'password_new' => 'New password',
+    'password_now' => 'Old password',
+    'password_reset_link' => 'Password recovery link',
+    'profile' => 'Profile',
+    'remember' => 'Remember me',
+    'reset_password' => 'Password recovery',
+    'send_password_reset_link' => 'Send password recovery link',
+    'update_password' => 'Change password',
+    'update_password_title' => 'New password information',
+    'update_profile' => 'Change personal information',
+    'update_profile_success' => 'Save changes personal information success!',
+    'username' => 'Username',
+    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+];
